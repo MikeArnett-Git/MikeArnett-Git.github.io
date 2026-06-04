@@ -1,0 +1,138 @@
+---
+/**
+ * /app/about — About view.
+ * Profile header, about paragraphs, beyondTheEditor, availability, contact CTA.
+ * Contact = GitHub only (A3 deferred — no email/phone). D20 IP-clean.
+ * D14: reuses widgetCard/widgetHead/widgetH2/summaryText/availList/availCta/availCard from Overview.css.
+ */
+import AppShellLayout from '../../layouts/AppShellLayout.astro';
+import Button from '../../components/primitives/Button.astro';
+import { viewStack, viewIntro } from '../../styles/appView.css';
+import {
+  widgetCard, widgetHead, widgetH2, widgetHint,
+  summaryText,
+  profileCard, profileTop, profileAvatar, profileId, profileH1, profileRole, profileLoc,
+  availCard, availHead, availList, liveDotLg, liveColor,
+  focusItem, focusBullet, focusText, focusFt,
+} from '../../components/widgets/Overview.css';
+import { profile } from '../../data/profile';
+import { beyondTheEditor } from '../../data/practices';
+---
+
+<AppShellLayout
+  title="About — Mike Arnett · Senior Full-Stack Software Engineer"
+  description="About Mike Arnett — senior full-stack software engineer based in Melbourne, AU."
+  activeView="about"
+  viewLabel="About"
+>
+  <section class={viewStack} aria-label="About Mike Arnett">
+
+    <!-- Profile header card -->
+    <article class={`${widgetCard} ${profileCard} reveal`}>
+      <div class={profileTop}>
+        <div class={profileAvatar} aria-hidden="true">MA</div>
+        <div class={profileId}>
+          <h1 class={profileH1}>{profile.name}</h1>
+          <span class={profileRole}>{profile.title}</span>
+          <span class={profileLoc}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:14px;height:14px;opacity:0.7;flex-shrink:0">
+              <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+            {profile.locationDetail}
+          </span>
+        </div>
+      </div>
+    </article>
+
+    <!-- About paragraphs -->
+    <article class={`${widgetCard} reveal`}>
+      <div class={widgetHead}>
+        <h2 class={widgetH2}>About</h2>
+      </div>
+      {profile.about.map(para => (
+        <p class={summaryText}>{para}</p>
+      ))}
+    </article>
+
+    <!-- Availability -->
+    <article class={`${widgetCard} ${availCard} reveal`}>
+      <div class={availHead}>
+        <span aria-hidden="true" class={liveDotLg}></span>
+        <h2 class={widgetH2}>Available for…</h2>
+      </div>
+      <ul class={availList}>
+        {profile.availableFor.map(item => (
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class={liveColor} style="width:16px;height:16px;flex-shrink:0;margin-top:3px">
+              <path d="M20 6 9 17l-5-5"/>
+            </svg>
+            {item}
+          </li>
+        ))}
+      </ul>
+    </article>
+
+    <!-- Beyond the editor -->
+    <article class={`${widgetCard} reveal`}>
+      <div class={widgetHead}>
+        <h2 class={widgetH2}>Beyond the editor</h2>
+        <span class={widgetHint}>interests</span>
+      </div>
+      <div>
+        {beyondTheEditor.map(item => (
+          <div class={focusItem}>
+            <span class={focusBullet} aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:15px;height:15px">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </span>
+            <span class={focusText}>
+              <span class={focusFt}>{item}</span>
+            </span>
+          </div>
+        ))}
+      </div>
+    </article>
+
+    <!-- Contact CTA — GitHub only -->
+    <article class={`${widgetCard} reveal`} aria-label="Contact">
+      <div class={widgetHead}>
+        <h2 class={widgetH2}>Get in touch</h2>
+        <span class={widgetHint}>GitHub only for now</span>
+      </div>
+      <p class={viewIntro}>{profile.availabilityLine}</p>
+      <div>
+        <Button variant="primary" href={profile.github} rel="noopener noreferrer">
+          github.com/{profile.githubHandle}
+          <Fragment slot="arrow">→</Fragment>
+        </Button>
+      </div>
+    </article>
+
+  </section>
+</AppShellLayout>
+
+<style is:global>
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      opacity: 0;
+      transform: translateY(14px);
+      animation: viewRise 600ms cubic-bezier(.2,.7,.2,1) forwards;
+    }
+    .reveal:nth-child(2)  { animation-delay: 60ms;  }
+    .reveal:nth-child(3)  { animation-delay: 120ms; }
+    .reveal:nth-child(4)  { animation-delay: 180ms; }
+    .reveal:nth-child(5)  { animation-delay: 240ms; }
+    .reveal:nth-child(6)  { animation-delay: 300ms; }
+    .reveal:nth-child(7)  { animation-delay: 360ms; }
+    .reveal:nth-child(8)  { animation-delay: 420ms; }
+    @keyframes viewRise {
+      to { opacity: 1; transform: none; }
+    }
+  }
+  .mono {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+</style>

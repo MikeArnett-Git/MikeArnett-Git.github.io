@@ -1,0 +1,24 @@
+---
+import { btnNavCta } from './primitives/Button.css';
+import { topbar, cmdbar, brandmark, brandGlyph, brandSep, brandRole, cmdspacer, primaryNav, navLink } from './Nav.css';
+import { pageNav } from '../data/nav';
+---
+
+<header class={topbar}>
+  <div class={cmdbar}>
+    <div class={brandmark}>
+      <span class={brandGlyph} aria-hidden="true"></span>
+      <span>mike-arnett</span>
+      <span class={brandSep}>·</span>
+      <span class={brandRole}>senior engineer / ai-systems</span>
+    </div>
+    <span class={cmdspacer}></span>
+    <nav class={primaryNav} aria-label="Primary">
+      {pageNav.map(item => (
+        <a class={item.cta ? btnNavCta : navLink} href={item.href}>
+          {item.cta ? `${item.label} ↓` : item.label}
+        </a>
+      ))}
+    </nav>
+  </div>
+</header>

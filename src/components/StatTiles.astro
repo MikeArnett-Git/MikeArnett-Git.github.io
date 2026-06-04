@@ -1,0 +1,14 @@
+---
+import MetricTile from './primitives/MetricTile.astro';
+import { metricAccent, metricLive } from './primitives/MetricTile.css';
+import { tiles } from './StatTiles.css';
+import { metrics } from '../data/metrics';
+---
+
+<div class={tiles} role="list" aria-label="Headline proof points">
+  {metrics.map(m => (
+    <MetricTile label={m.key} sub={m.context}>
+      {m.lead}<span class={m.tone === 'live' ? metricLive : metricAccent}>{m.accent}</span>{m.trail}
+    </MetricTile>
+  ))}
+</div>

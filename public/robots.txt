@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://mikearnett-git.github.io/sitemap-index.xml

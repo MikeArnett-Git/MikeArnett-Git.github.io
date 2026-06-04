@@ -1,0 +1,152 @@
+---
+/**
+ * /app/resume — Résumé view.
+ * Condensed single-column: summary → experience (compact list) → skills → education → contact.
+ * No PDF asset yet — "PDF coming soon" affordance rendered instead of a dead link.
+ * D14: reuses widgetCard/widgetHead/widgetH2/summaryText from Overview.css.
+ *      SkillsBars rendered directly for the skills section.
+ *      Contact = GitHub only (A3 deferred).
+ */
+import AppShellLayout from '../../layouts/AppShellLayout.astro';
+import SkillsBars from '../../components/widgets/SkillsBars.astro';
+import Icon from '../../components/primitives/Icon.astro';
+import { viewStack, viewH1, viewIntro } from '../../styles/appView.css';
+import {
+  widgetCard, widgetHead, widgetH2, widgetHint,
+  summaryText,
+  expYear,
+  viewAll,
+} from '../../components/widgets/Overview.css';
+import { profile } from '../../data/profile';
+import { experience } from '../../data/experience';
+import { skills, skillExtras } from '../../data/skills';
+import { education } from '../../data/education';
+---
+
+<AppShellLayout
+  title="Résumé — Mike Arnett · Senior Full-Stack Software Engineer"
+  description="Mike Arnett's résumé — senior full-stack software engineer: AI systems and developer tools."
+  activeView="resume"
+  viewLabel="Résumé"
+>
+  <section class={viewStack} aria-label="Résumé">
+    <header style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+      <h1 class={viewH1}>Résumé</h1>
+      <!-- PDF not yet available -->
+      <span class={widgetHint} aria-label="PDF version not yet available">PDF coming soon</span>
+    </header>
+
+    <!-- Summary -->
+    <article class={`${widgetCard} reveal`}>
+      <div class={widgetHead}>
+        <h2 class={widgetH2}>Summary</h2>
+      </div>
+      <p class={summaryText}>
+        <strong>{profile.summaryLead}</strong>{' '}
+        {profile.summaryBody}
+      </p>
+    </article>
+
+    <!-- Experience — compact list (not the full ExperienceEntry card) -->
+    <article class={`${widgetCard} reveal`}>
+      <div class={widgetHead}>
+        <h2 class={widgetH2}>Experience</h2>
+        <a class={viewAll} href="/app/experience">
+          Full view
+          <Icon name="arrowRight" size={14} />
+        </a>
+      </div>
+      <ol style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:20px" aria-label="Work experience">
+        {experience.map(role => (
+          <li style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+              <span style="font-weight:600;font-size:14.5px">{role.org}</span>
+              <span class={widgetHint}>·</span>
+              <span class={viewIntro} style="font-size:13.5px">{role.role}</span>
+              <span class={`${expYear} mono`} style="margin-left:auto">{role.period}</span>
+            </div>
+            {role.highlights && role.highlights.length > 0 && (
+              <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:5px">
+                {role.highlights.map(h => (
+                  <li style="display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.55;padding-left:1rem;position:relative">
+                    <span aria-hidden="true" style="position:absolute;left:0;top:0;opacity:0.5">▸</span>
+                    <span set:html={h}></span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))}
+      </ol>
+    </article>
+
+    <!-- Skills -->
+    <article class={`${widgetCard} reveal`}>
+      <div class={widgetHead}>
+        <h2 class={widgetH2}>Skills</h2>
+        <span class={widgetHint}>core stack</span>
+      </div>
+      <SkillsBars skills={skills} extras={skillExtras} />
+    </article>
+
+    <!-- Education -->
+    <article class={`${widgetCard} reveal`}>
+      <div class={widgetHead}>
+        <h2 class={widgetH2}>Education</h2>
+      </div>
+      <ol style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px" aria-label="Education">
+        {education.map(edu => (
+          <li style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+            <span style="font-weight:600;font-size:14px">{edu.qualification}</span>
+            <span class={widgetHint}>—</span>
+            <span class={viewIntro} style="font-size:13.5px">{edu.institution}</span>
+            <span class={`${expYear} mono`} style="margin-left:auto">{edu.period}</span>
+          </li>
+        ))}
+      </ol>
+    </article>
+
+    <!-- Contact -->
+    <article class={`${widgetCard} reveal`} aria-label="Contact">
+      <div class={widgetHead}>
+        <h2 class={widgetH2}>Contact</h2>
+        <span class={widgetHint}>GitHub only for now</span>
+      </div>
+      <a
+        class={viewAll}
+        href={profile.github}
+        target="_blank"
+        rel="noopener noreferrer"
+        style="margin-left:0"
+      >
+        github.com/{profile.githubHandle}
+        <Icon name="arrowRight" size={14} />
+      </a>
+    </article>
+
+  </section>
+</AppShellLayout>
+
+<style is:global>
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      opacity: 0;
+      transform: translateY(14px);
+      animation: viewRise 600ms cubic-bezier(.2,.7,.2,1) forwards;
+    }
+    .reveal:nth-child(2)  { animation-delay: 60ms;  }
+    .reveal:nth-child(3)  { animation-delay: 120ms; }
+    .reveal:nth-child(4)  { animation-delay: 180ms; }
+    .reveal:nth-child(5)  { animation-delay: 240ms; }
+    .reveal:nth-child(6)  { animation-delay: 300ms; }
+    .reveal:nth-child(7)  { animation-delay: 360ms; }
+    .reveal:nth-child(8)  { animation-delay: 420ms; }
+    @keyframes viewRise {
+      to { opacity: 1; transform: none; }
+    }
+  }
+  .mono {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+</style>

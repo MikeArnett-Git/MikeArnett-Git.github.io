@@ -1,0 +1,23 @@
+---
+/**
+ * MetricTile primitive — a single stat/metric cell.
+ * Caller provides label (tileKey) and the metric slot (can include accent/live spans).
+ * sub: optional sub-label below the metric.
+ */
+import { tile, tileKey, metric, metricSub } from './MetricTile.css';
+
+interface Props {
+  label: string;
+  sub?: string;
+}
+
+const { label, sub } = Astro.props;
+---
+
+<div class={tile} role="listitem">
+  <span class={tileKey}>{label}</span>
+  <span class={metric}>
+    <slot />
+  </span>
+  {sub && <span class={metricSub}>{sub}</span>}
+</div>

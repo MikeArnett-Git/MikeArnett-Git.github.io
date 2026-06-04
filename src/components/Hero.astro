@@ -1,0 +1,59 @@
+---
+import Button from './primitives/Button.astro';
+import { hero, wrap, heroStatus, liveDot, h1, cursor, positioning, positioningPin, summary, summaryStrong, heroCta } from './Hero.css';
+import { profile } from '../data/profile';
+---
+
+<section class={hero} aria-labelledby="hero-name">
+  <div class={wrap}>
+    <span class={heroStatus}>
+      <span class={liveDot} aria-hidden="true"></span>
+      {profile.location} · {profile.availability.join(' · ')}
+    </span>
+
+    <h1 id="hero-name" class={h1}>
+      {profile.name}<span class={cursor} aria-hidden="true"></span>
+    </h1>
+
+    <p class={positioning}>
+      {profile.title}
+      <span class={positioningPin}>{profile.tagline}</span>
+    </p>
+
+    <p class={summary}>
+      <strong class={summaryStrong}>{profile.summaryLead}</strong>
+      {' '}{profile.summaryBody}
+    </p>
+
+    <div class={heroCta}>
+      <Button variant="primary" href="#resume">View résumé</Button>
+      <Button variant="ghost" href={profile.github} rel="me">
+        GitHub<Fragment slot="arrow">↗</Fragment>
+      </Button>
+    </div>
+  </div>
+
+  <!--
+    hero-aside: editorial layout right column (hidden in control-plane + kinetic).
+    Contains location info + availability — matches the editorial mockup's right column.
+    Shown only via [data-layout="editorial"] CSS; zero impact on other layouts.
+  -->
+  <aside class="hero-aside" aria-label="Location and availability">
+    <div class="locale">
+      <span class="locale-label">Based</span>
+      {profile.location}
+    </div>
+    <div class="locale">
+      <span class="locale-label">Availability</span>
+      {profile.availability.map((a, i) => (
+        <Fragment>{i > 0 && <br />}{a}</Fragment>
+      ))}
+    </div>
+    <div class={heroCta}>
+      <Button variant="primary" href="#resume">View résumé</Button>
+      <Button variant="ghost" href={profile.github} rel="me">
+        GitHub<Fragment slot="arrow">↗</Fragment>
+      </Button>
+    </div>
+  </aside>
+</section>

@@ -1,0 +1,100 @@
+---
+/**
+ * ActivityHeatmap — deterministic contributions strip.
+ * Config/data-driven (D18): weeks + seed props.
+ *
+ * HARD CONSTRAINT: NO Math.random(), NO Date.now().
+ * Level for each cell derived from a deterministic pseudo-random sequence
+ * seeded by (week * 7 + day + seed) using a simple LCG-like hash.
+ * The sequence is fixed at build time — same output every render.
+ *
+ * Token-styled: accent hue via CSS custom prop. Works in all 4 themes.
+ */
+import {
+  actStrip, actCell,
+  actCellL1, actCellL2, actCellL3, actCellL4,
+  actLegend, actLegendCells, actLegendCell,
+} from './ActivityHeatmap.css';
+
+interface Props {
+  /** Number of weeks to show (default: 16). */
+  weeks?: number;
+  /** Days per week (default: 7). */
+  daysPerWeek?: number;
+  /**
+   * Deterministic seed — integer.
+   * Changing this shifts the pattern (for future personalisation without random).
+   */
+  seed?: number;
+  ariaLabel?: string;
+}
+
+const {
+  weeks = 16,
+  daysPerWeek = 7,
+  seed = 42,
+  ariaLabel = 'Contribution activity heatmap over the last 16 weeks, denser in recent weeks.',
+} = Astro.props;
+
+/**
+ * Deterministic hash: maps an integer key to 0–3 (level index).
+ * Uses a simple multiplicative hash (no imports, no randomness).
+ * Recent weeks (higher week index) skew higher.
+ */
+function cellLevel(week: number, day: number, totalWeeks: number): number {
+  // Mix week + day + seed into a stable integer
+  const x = (week * 31 + day * 7 + seed) & 0x7fffffff;
+  // Cheap hash (Wang hash step)
+  const h = ((x ^ (x >> 16)) * 0x45d9f3b) & 0x7fffffff;
+  const h2 = ((h ^ (h >> 16)) * 0x45d9f3b) & 0x7fffffff;
+  const h3 = (h2 ^ (h2 >> 16)) & 0x7fffffff;
+  const raw = h3 % 8; // 0..7
+  // Bias recent weeks toward higher levels
+  const recencyBoost = week > totalWeeks * 0.7 ? 2 : 0;
+  const boosted = Math.min(raw + recencyBoost, 7);
+  // Map 0..7 → 0..4 (0 = empty, 1=l1, 2=l2, 3=l3, 4=l4)
+  if (boosted <= 2) return 0;
+  if (boosted <= 4) return 1;
+  if (boosted <= 5) return 2;
+  if (boosted <= 6) return 3;
+  return 4;
+}
+
+const levelClasses: Record<number, string> = {
+  0: actCell,
+  1: `${actCell} ${actCellL1}`,
+  2: `${actCell} ${actCellL2}`,
+  3: `${actCell} ${actCellL3}`,
+  4: `${actCell} ${actCellL4}`,
+};
+
+interface Cell {
+  level: number;
+  key: string;
+}
+
+const cells: Cell[] = [];
+for (let w = 0; w < weeks; w++) {
+  for (let d = 0; d < daysPerWeek; d++) {
+    cells.push({ level: cellLevel(w, d, weeks), key: `${w}-${d}` });
+  }
+}
+---
+
+<div class={actStrip} role="img" aria-label={ariaLabel}>
+  {cells.map(c => (
+    <span class={levelClasses[c.level]}></span>
+  ))}
+</div>
+
+<div class={actLegend} aria-hidden="true">
+  <span>less</span>
+  <span class={actLegendCells}>
+    <i class={`${actLegendCell} ${actCell}`}></i>
+    <i class={`${actLegendCell} ${actCellL1}`}></i>
+    <i class={`${actLegendCell} ${actCellL2}`}></i>
+    <i class={`${actLegendCell} ${actCellL3}`}></i>
+    <i class={`${actLegendCell} ${actCellL4}`}></i>
+  </span>
+  <span>more</span>
+</div>

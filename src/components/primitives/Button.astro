@@ -1,0 +1,38 @@
+---
+/**
+ * Button / CTA primitive.
+ * Renders as <a> when href is provided, <button> otherwise.
+ * variant: 'primary' | 'ghost' | 'nav-cta'
+ * arrow: show trailing arrow glyph (defaults true for primary/ghost, false for nav-cta)
+ */
+import { btnPrimary, btnGhost, btnNavCta, btnArrow } from './Button.css';
+
+interface Props {
+  variant: 'primary' | 'ghost' | 'nav-cta';
+  href?: string;
+  rel?: string;
+  target?: string;
+  arrow?: boolean;
+}
+
+const { variant, href, rel, target, arrow } = Astro.props;
+
+const showArrow = arrow !== undefined ? arrow : variant !== 'nav-cta';
+
+const cls =
+  variant === 'primary' ? btnPrimary :
+  variant === 'ghost'   ? btnGhost :
+  btnNavCta;
+---
+
+{href ? (
+  <a class={cls} href={href} rel={rel} target={target}>
+    <slot />
+    {showArrow && <span class={btnArrow} aria-hidden="true"><slot name="arrow">↓</slot></span>}
+  </a>
+) : (
+  <button class={cls} type="button">
+    <slot />
+    {showArrow && <span class={btnArrow} aria-hidden="true"><slot name="arrow">↓</slot></span>}
+  </button>
+)}

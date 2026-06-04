@@ -1,0 +1,37 @@
+---
+/**
+ * /app/projects/[slug] — Dashboard case-study view.
+ * One route per case study, generated from the caseStudies data array.
+ * D14: uses shared CaseStudyArticle component; no per-design forks.
+ * D19: renders inside AppShellLayout with View-Transitions nav.
+ * D20: title/description drawn from data only.
+ */
+import AppShellLayout from '../../../layouts/AppShellLayout.astro';
+import CaseStudyArticle from '../../../components/CaseStudyArticle.astro';
+import { caseStudies } from '../../../data/caseStudies';
+import type { CaseStudy } from '../../../data/types';
+
+export function getStaticPaths() {
+  return caseStudies.map(cs => ({
+    params: { slug: cs.slug },
+    props: { caseStudy: cs },
+  }));
+}
+
+interface Props {
+  caseStudy: CaseStudy;
+}
+
+const { caseStudy: cs } = Astro.props;
+
+const plainSummary = cs.summary.replace(/<[^>]+>/g, '');
+---
+
+<AppShellLayout
+  title={`${cs.title} — Mike Arnett`}
+  description={plainSummary}
+  activeView="projects"
+  viewLabel={cs.title}
+>
+  <CaseStudyArticle caseStudy={cs} backHref="/app/projects" />
+</AppShellLayout>

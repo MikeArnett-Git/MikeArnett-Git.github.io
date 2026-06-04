@@ -1,0 +1,47 @@
+---
+/**
+ * SkillsBars — labelled bar chart of skills.
+ * Config/data-driven (D18): accepts a `skills` array so the type could
+ * later vary (bars→dots→table). Token-styled, works in all 4 themes.
+ *
+ * Bar widths are deterministic strings ("95%") — no Math.random.
+ * Animation is CSS-only, gated by prefers-reduced-motion.
+ */
+import {
+  skillsList, skillRow, skillName, skillMeta,
+  skillBarTrack, skillBarFill, skillCloud, skillTag,
+} from './SkillsBars.css';
+import type { Skill, ExtraTag } from '../../data/types';
+
+interface Props {
+  skills: Skill[];
+  /** Additional tags shown below the bars (e.g. tooling cloud). */
+  extras?: ExtraTag[];
+  extrasLabel?: string;
+}
+
+const { skills, extras = [], extrasLabel = 'Additional tooling' } = Astro.props;
+---
+
+<div class={skillsList} id="skills-bars">
+  {skills.map(s => (
+    <div class={skillRow}>
+      <span class={skillName}>{s.name}</span>
+      <span class={skillMeta}>{s.level}</span>
+      <span class={skillBarTrack}>
+        <span
+          class={skillBarFill}
+          style={`width:${s.pct};--bar-w:${s.pct}`}
+          role="img"
+          aria-label={`${s.name}: ${s.level}`}
+        ></span>
+      </span>
+    </div>
+  ))}
+</div>
+
+{extras.length > 0 && (
+  <div class={skillCloud} aria-label={extrasLabel}>
+    {extras.map(e => <span class={skillTag}>{e.label}</span>)}
+  </div>
+)}

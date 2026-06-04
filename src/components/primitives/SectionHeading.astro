@@ -1,0 +1,26 @@
+---
+/**
+ * SectionHeading primitive — idx / h2 / optional meta row.
+ * Used in every content section.
+ */
+import { sectionHead, sectionIdx, sectionH2, sectionMeta } from './SectionHeading.css';
+
+interface Props {
+  /** e.g. '01', '02', '03' */
+  idx: string;
+  /** The heading text. */
+  heading: string;
+  /** id applied to the <h2> for aria-labelledby. */
+  id: string;
+  /** Optional faint right-aligned meta label. */
+  meta?: string;
+}
+
+const { idx, heading, id, meta } = Astro.props;
+---
+
+<div class={`${sectionHead} reveal`}>
+  <span class={sectionIdx}>{idx}</span>
+  <h2 id={id} class={sectionH2}>{heading}</h2>
+  {meta && <span class={sectionMeta}>{meta}</span>}
+</div>

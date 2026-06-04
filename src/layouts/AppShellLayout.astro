@@ -1,0 +1,415 @@
+---
+/**
+ * AppShellLayout — persistent app-shell with sidebar nav + ⌘K command palette.
+ * D19: real /app/* routes navigated via Astro View Transitions.
+ * D17: theme axis is fully orthogonal — all 4 themes render correctly.
+ *      data-layout is always 'dashboard' on this shell.
+ * D14: composes the same token contract as BaseLayout (no forked styles).
+ */
+import { ClientRouter } from 'astro:transitions';
+import { controlPlaneTheme } from '../styles/presets/control-plane.css';
+import { editorialTheme } from '../styles/presets/editorial.css';
+import { kineticTheme } from '../styles/presets/kinetic.css';
+import { calmConsoleTheme } from '../styles/presets/calm-console.css';
+import '../styles/global.css';
+import { THEME_DEFAULTS } from '../lib/theme';
+import ControlPanel from '../components/ControlPanel';
+import { appNav, paletteItems } from '../data/nav';
+import { profile } from '../data/profile';
+import type { AppView } from '../data/types';
+import ThemeScript from '../components/ThemeScript.astro';
+import SiteHead from '../components/SiteHead.astro';
+import Icon from '../components/primitives/Icon.astro';
+import {
+  shellApp, shellSidebar, shellBrand, shellBrandMark,
+  shellBrandMeta, shellBrandName, shellBrandSub,
+  shellNavGroupLabel, shellNav, shellNavItem, shellNavItemIcon, shellNavItemLabel,
+  shellSidebarFoot, shellAvailPill, shellDot,
+  shellMain, shellTopbar, shellHamburger, shellTopbarTitle,
+  shellTopbarEyebrow, shellTopbarH, shellTopbarSpacer,
+  shellCmdk, shellCmdkTxt, shellKbd, shellTopbarGh,
+  shellContent, shellScrim,
+  shellPaletteOverlay, shellPalette,
+  shellPaletteInputWrap, shellPaletteInput, shellPaletteEsc,
+  shellPaletteSection, shellPaletteSectionLabel, shellPaletteItem, shellPiShortcut,
+  skipLink,
+} from './AppShellLayout.css';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Which nav item is currently active — matches the route segment. */
+  activeView?: AppView;
+  /** Heading shown in the top bar. */
+  viewLabel?: string;
+}
+
+const {
+  title,
+  description,
+  activeView = 'overview',
+  viewLabel = 'Overview',
+} = Astro.props;
+
+const themeClasses: Record<string, string> = {
+  'control-plane': controlPlaneTheme,
+  'editorial': editorialTheme,
+  'kinetic': kineticTheme,
+  'calm-console': calmConsoleTheme,
+};
+const defaultTheme = THEME_DEFAULTS.theme;
+const defaultThemeClass = themeClasses[defaultTheme] ?? controlPlaneTheme;
+
+// Brand initials derived from the profile name (e.g. "Mike Arnett" → "MA").
+const brandInitials = profile.name.split(' ').map(w => w[0]).join('');
+---
+
+<html
+  lang="en-AU"
+  class={defaultThemeClass}
+  data-theme={defaultTheme}
+  data-layout="dashboard"
+  data-mode={THEME_DEFAULTS.mode}
+  data-density={THEME_DEFAULTS.density}
+  data-motion="ok"
+>
+  <head>
+    <SiteHead title={title} description={description} />
+
+    {/* Pre-paint theme restore (no FOUC) — shared, mirrored across layouts. */}
+    <ThemeScript themeClasses={themeClasses} />
+
+    <ClientRouter />
+  </head>
+  <body>
+    <a href="#main" class={skipLink}>Skip to content</a>
+
+    <!-- Mobile scrim — click to close drawer -->
+    <div class={shellScrim} id="shell-scrim" aria-hidden="true"></div>
+
+    <div class={shellApp}>
+      <!-- ===== SIDEBAR ===== -->
+      <aside class={shellSidebar} id="shell-sidebar" aria-label="Primary navigation">
+        <div class={shellBrand}>
+          <div class={shellBrandMark} aria-hidden="true">{brandInitials}</div>
+          <div class={shellBrandMeta}>
+            <span class={shellBrandName}>{profile.name}</span>
+            <span class={shellBrandSub}>{profile.shortTitle}</span>
+          </div>
+        </div>
+
+        <nav aria-label="Sections">
+          <div class={shellNavGroupLabel}>Workspace</div>
+          <ul class={shellNav}>
+            {appNav.map(item => (
+              <li>
+                <a
+                  class={shellNavItem}
+                  href={item.href}
+                  aria-current={activeView === item.id ? 'page' : undefined}
+                >
+                  <span class={shellNavItemIcon} aria-hidden="true">
+                    <Fragment set:html={item.icon} />
+                  </span>
+                  <span class={shellNavItemLabel}>{item.label}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <div class={shellSidebarFoot}>
+          <span class={shellAvailPill}>
+            <span class={shellDot} aria-hidden="true"></span>
+            <span>Available for work</span>
+          </span>
+        </div>
+      </aside>
+
+      <!-- ===== MAIN ===== -->
+      <div class={shellMain}>
+        <!-- Top bar -->
+        <header class={shellTopbar}>
+          <button
+            class={shellHamburger}
+            id="shell-hamburger"
+            aria-label="Open navigation menu"
+            aria-controls="shell-sidebar"
+            aria-expanded="false"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true" style="width:20px;height:20px">
+              <path d="M3 6h18M3 12h18M3 18h18"/>
+            </svg>
+          </button>
+
+          <div class={shellTopbarTitle}>
+            <span class={shellTopbarEyebrow}>Workspace</span>
+            <span class={shellTopbarH}>{viewLabel}</span>
+          </div>
+
+          <div class={shellTopbarSpacer}></div>
+
+          <!-- ⌘K command palette trigger -->
+          <button
+            class={shellCmdk}
+            id="shell-cmdk-trigger"
+            aria-label="Open command palette and search"
+            aria-haspopup="dialog"
+            aria-expanded="false"
+          >
+            <Icon name="search" size={17} stroke={1.8} style="flex-shrink:0" />
+            <span class={shellCmdkTxt}>Search or jump to…</span>
+            <kbd class={shellKbd} aria-hidden="true">⌘K</kbd>
+          </button>
+
+          <a
+            class={shellTopbarGh}
+            href="https://github.com/MikeArnett-Git"
+            aria-label="GitHub profile (opens in new tab)"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="width:19px;height:19px">
+              <path d="M12 1.5a10.5 10.5 0 0 0-3.32 20.46c.52.1.71-.23.71-.5v-1.96c-2.9.63-3.52-1.23-3.52-1.23-.47-1.2-1.16-1.52-1.16-1.52-.95-.65.07-.64.07-.64 1.05.07 1.6 1.08 1.6 1.08.93 1.6 2.45 1.14 3.05.87.1-.68.36-1.14.66-1.4-2.32-.26-4.76-1.16-4.76-5.16 0-1.14.41-2.07 1.07-2.8-.1-.27-.46-1.32.1-2.76 0 0 .88-.28 2.88 1.07a9.9 9.9 0 0 1 5.24 0c2-1.35 2.87-1.07 2.87-1.07.57 1.44.21 2.49.11 2.76.67.73 1.07 1.66 1.07 2.8 0 4.01-2.44 4.9-4.77 5.16.37.32.71.95.71 1.92v2.85c0 .28.19.61.72.5A10.5 10.5 0 0 0 12 1.5Z"/>
+            </svg>
+          </a>
+        </header>
+
+        <!-- Content area — slot for per-view content -->
+        <main class={shellContent} id="main">
+          <slot />
+        </main>
+      </div>
+    </div>
+
+    <!-- ===== COMMAND PALETTE ===== -->
+    <div
+      class={shellPaletteOverlay}
+      id="shell-palette-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Command palette"
+      aria-hidden="true"
+    >
+      <div class={shellPalette} id="shell-palette">
+        <div class={shellPaletteInputWrap}>
+          <Icon name="search" size={19} stroke={1.8} style="flex-shrink:0" />
+          <input
+            class={shellPaletteInput}
+            id="shell-palette-input"
+            type="text"
+            placeholder="Search or jump to…"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <kbd class={shellPaletteEsc}>Esc</kbd>
+        </div>
+
+        <div class={shellPaletteSection} id="shell-palette-results">
+          <div class={shellPaletteSectionLabel}>Navigate</div>
+          {paletteItems.map(item => (
+            <button class={`${shellPaletteItem} shell-palette-filter-item`} data-href={item.href} data-label={item.label}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:17px;height:17px;flex-shrink:0;opacity:0.8">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <path d="M9 9h6v6H9z"/>
+              </svg>
+              {item.label}
+              {item.hint && <span class={shellPiShortcut}>{item.hint}</span>}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    {/* Floating design switcher — purely interactive chrome, no SSR needed;
+        client:only keeps it off the server render (and off the JS critical path). */}
+    <ControlPanel client:only="react" />
+
+    <script>
+      /* ── Shell interactivity ──────────────────────────────────────────
+         Hamburger drawer + scrim + ⌘K command palette.
+         Plain JS — no framework dependency.
+      ──────────────────────────────────────────────────────────────── */
+      (function () {
+        // ── Hamburger / drawer ──────────────────────────────────────
+        var hamburger = document.getElementById('shell-hamburger');
+        var sidebar   = document.getElementById('shell-sidebar');
+        var scrim     = document.getElementById('shell-scrim');
+
+        function openDrawer(): void {
+          if (!sidebar || !scrim || !hamburger) return;
+          sidebar.classList.add('shell-sidebar--drawer-open');
+          scrim.classList.add('shell-scrim--open');
+          hamburger.setAttribute('aria-expanded', 'true');
+        }
+        function closeDrawer(): void {
+          if (!sidebar || !scrim || !hamburger) return;
+          sidebar.classList.remove('shell-sidebar--drawer-open');
+          scrim.classList.remove('shell-scrim--open');
+          hamburger.setAttribute('aria-expanded', 'false');
+        }
+
+        if (hamburger) hamburger.addEventListener('click', openDrawer);
+        if (scrim)     scrim.addEventListener('click', closeDrawer);
+
+        // ⌘K palette close + drawer close on Escape
+        document.addEventListener('keydown', function (e: KeyboardEvent) {
+          if (e.key === 'Escape') {
+            closeDrawer();
+            var overlay = document.getElementById('shell-palette-overlay');
+            if (overlay && overlay.classList.contains('shell-palette--open')) {
+              closePalette();
+            }
+          }
+        });
+
+        // Close drawer when a nav link is clicked (mobile)
+        if (sidebar) {
+          sidebar.querySelectorAll('a').forEach(function (a) {
+            a.addEventListener('click', function () {
+              setTimeout(closeDrawer, 80);
+            });
+          });
+        }
+
+        // ── Command palette ─────────────────────────────────────────
+        var paletteOverlay = document.getElementById('shell-palette-overlay');
+        var paletteInput   = document.getElementById('shell-palette-input') as HTMLInputElement | null;
+        var cmdkTrigger    = document.getElementById('shell-cmdk-trigger');
+
+        function openPalette(): void {
+          if (!paletteOverlay || !paletteInput) return;
+          paletteOverlay.removeAttribute('aria-hidden');
+          paletteOverlay.classList.add('shell-palette--open');
+          if (cmdkTrigger) cmdkTrigger.setAttribute('aria-expanded', 'true');
+          paletteInput.value = '';
+          filterItems('');
+          paletteInput.focus();
+        }
+        function closePalette(): void {
+          if (!paletteOverlay) return;
+          paletteOverlay.setAttribute('aria-hidden', 'true');
+          paletteOverlay.classList.remove('shell-palette--open');
+          if (cmdkTrigger) cmdkTrigger.setAttribute('aria-expanded', 'false');
+          if (cmdkTrigger) (cmdkTrigger as HTMLButtonElement).focus();
+        }
+
+        if (cmdkTrigger) cmdkTrigger.addEventListener('click', openPalette);
+        if (paletteOverlay) {
+          paletteOverlay.addEventListener('click', function (e: MouseEvent) {
+            if (e.target === paletteOverlay) closePalette();
+          });
+        }
+
+        // ⌘K / Ctrl+K to open
+        document.addEventListener('keydown', function (e: KeyboardEvent) {
+          if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+            e.preventDefault();
+            var overlay = document.getElementById('shell-palette-overlay');
+            if (overlay && overlay.classList.contains('shell-palette--open')) {
+              closePalette();
+            } else {
+              openPalette();
+            }
+          }
+        });
+
+        // Filter items by query
+        function filterItems(query: string): void {
+          var items = document.querySelectorAll<HTMLElement>('.shell-palette-filter-item');
+          var q = query.toLowerCase().trim();
+          items.forEach(function (item) {
+            var label = (item.dataset.label || '').toLowerCase();
+            item.style.display = (!q || label.includes(q)) ? '' : 'none';
+          });
+        }
+
+        if (paletteInput) {
+          paletteInput.addEventListener('input', function () {
+            filterItems(paletteInput!.value);
+          });
+        }
+
+        // Navigate on item click
+        document.querySelectorAll<HTMLElement>('.shell-palette-filter-item').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var href = btn.dataset.href;
+            if (href) {
+              closePalette();
+              window.location.href = href;
+            }
+          });
+        });
+
+        // Keyboard arrow nav + focus trap within palette
+        var paletteEl = document.getElementById('shell-palette');
+        if (paletteEl) {
+          paletteEl.addEventListener('keydown', function (e: KeyboardEvent) {
+            var visibleItems = Array.from(
+              document.querySelectorAll<HTMLElement>('.shell-palette-filter-item:not([style*="display: none"])'),
+            );
+            var input = document.getElementById('shell-palette-input') as HTMLElement | null;
+            // Build focusable list: input first, then visible items
+            var focusable: HTMLElement[] = input ? [input, ...visibleItems] : visibleItems;
+            var cur = document.activeElement as HTMLElement;
+            var items = visibleItems;
+            var idx = items.indexOf(cur);
+            if (e.key === 'Tab') {
+              if (focusable.length === 0) return;
+              e.preventDefault();
+              var fIdx = focusable.indexOf(cur);
+              if (e.shiftKey) {
+                focusable[(fIdx - 1 + focusable.length) % focusable.length]?.focus();
+              } else {
+                focusable[(fIdx + 1) % focusable.length]?.focus();
+              }
+            } else if (e.key === 'ArrowDown') {
+              e.preventDefault();
+              items[(idx + 1) % items.length]?.focus();
+            } else if (e.key === 'ArrowUp') {
+              e.preventDefault();
+              items[(idx - 1 + items.length) % items.length]?.focus();
+            } else if (e.key === 'Enter' && idx >= 0) {
+              cur.click();
+            }
+          });
+        }
+      })();
+    </script>
+
+    <style is:global>
+      /* Drawer open class — applied by JS, must survive VE hashing */
+      .shell-sidebar--drawer-open {
+        transform: translateX(0) !important;
+      }
+      .shell-scrim--open {
+        display: block !important;
+      }
+      .shell-palette--open {
+        display: flex !important;
+      }
+
+      /* Nav icon SVG sizing — applied inside VE-hashed class element */
+      [class*="shellNavItemIcon"] svg {
+        width: 19px;
+        height: 19px;
+        display: block;
+      }
+
+      /* Active nav item accent (accent-hue parameterised) */
+      [class*="shellNavItem"][aria-current="page"] {
+        background: oklch(70% 0.15 var(--accent-hue, 265) / 0.14) !important;
+      }
+      [class*="shellNavItem"][aria-current="page"] [class*="shellNavItemIcon"] svg {
+        color: oklch(76% 0.155 var(--accent-hue, 265));
+        opacity: 1;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .shell-sidebar--drawer-open {
+          transition: none !important;
+        }
+      }
+    </style>
+  </body>
+</html>

@@ -1,0 +1,58 @@
+---
+import Tag from './primitives/Tag.astro';
+import { articleCard } from './primitives/Card.css';
+import {
+  expRail, expOrg, expRow, expRowLabel,
+  expBody, expBodyH3, expBodyP, expMetrics, expMetric, expMetricBold,
+  expHighlights, expHighlightItem
+} from './ExperienceEntry.css';
+import type { ExperienceRole } from '../data/types';
+
+interface Props {
+  role: ExperienceRole;
+}
+
+const { role } = Astro.props;
+
+// Map a role status tone to the Tag primitive's chip variant.
+const STATUS_VARIANT = {
+  shipped: 'chip-live',
+  live: 'chip-live',
+  current: 'chip-active',
+} as const;
+---
+
+<article class={`${articleCard} reveal`}>
+  <div class={expRail}>
+    <span class={expOrg}>{role.org}</span>
+    {role.status && <Tag variant={STATUS_VARIANT[role.status.tone]} dot>{role.status.label}</Tag>}
+    <div class={expRow}>
+      <span class={expRowLabel}>Role</span>
+      {role.role}
+    </div>
+    <div class={expRow}>
+      <span class={expRowLabel}>Year</span>
+      {role.period}
+    </div>
+    {role.surface && (
+      <div class={expRow}>
+        <span class={expRowLabel}>Surface</span>
+        {role.surface}
+      </div>
+    )}
+  </div>
+  <div class={expBody}>
+    <h3 class={expBodyH3}>{role.headline}</h3>
+    <p class={expBodyP} set:html={role.body}></p>
+    {role.highlights && role.highlights.length > 0 && (
+      <ul class={expHighlights}>
+        {role.highlights.map(h => <li class={expHighlightItem} set:html={h}></li>)}
+      </ul>
+    )}
+    <div class={expMetrics} aria-label="Outcome metrics">
+      {role.metrics.map(m => (
+        <span class={expMetric}>{m.label} <b class={expMetricBold}>{m.value}</b></span>
+      ))}
+    </div>
+  </div>
+</article>

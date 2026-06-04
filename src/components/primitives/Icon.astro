@@ -1,0 +1,52 @@
+---
+/**
+ * Icon primitive — renders a named icon from the icon registry (icons.ts).
+ * Wraps inner SVG path markup in a consistent <svg viewBox="0 0 24 24">.
+ * Usage: <Icon name="arrowRight" size={16} />
+ */
+import { icons } from './icons';
+import type { IconName } from './icons';
+
+interface Props {
+  /** Icon name from the registry */
+  name: IconName;
+  /** Width and height in px (or any CSS length string). Default: 24 */
+  size?: number | string;
+  /** stroke-width. Default: 2 */
+  stroke?: number;
+  /** Extra CSS class(es) */
+  class?: string;
+  /** Extra inline style appended after size rule */
+  style?: string;
+  /** Accessible label — if omitted the icon is aria-hidden */
+  label?: string;
+}
+
+const {
+  name,
+  size = 24,
+  stroke = 2,
+  class: className,
+  style: extraStyle,
+  label,
+} = Astro.props;
+
+const sizeStr = typeof size === 'number' ? `${size}px` : size;
+const styleAttr = [`width:${sizeStr}`, `height:${sizeStr}`, extraStyle].filter(Boolean).join(';');
+const inner = icons[name];
+---
+
+<svg
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width={stroke}
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  style={styleAttr}
+  class={className}
+  aria-hidden={label ? undefined : 'true'}
+  aria-label={label}
+  role={label ? 'img' : undefined}
+  set:html={inner}
+/>

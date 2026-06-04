@@ -1,0 +1,119 @@
+---
+/**
+ * CaseStudyArticle — shared case-study renderer.
+ * Renders into BaseLayout's <main> (page layout) or AppShellLayout's <slot>
+ * (dashboard). Layout-agnostic; token-driven; no hardcoded oklch.
+ *
+ * D14: reuses Tag + Button primitives; no per-design forks.
+ * D20: renders only what the CaseStudy data provides — no IP leak.
+ */
+import type { CaseStudy } from '../data/types';
+import Tag from './primitives/Tag.astro';
+import Button from './primitives/Button.astro';
+import {
+  article, backLink, kicker, title, lead,
+  sections, sectionBlock, sectionH2, sectionBody,
+  divider, badgesGrid, badgeTile, badgeKey, badgeVal,
+  stackSection, stackLabel, stackRow,
+  linksRow,
+} from './CaseStudyArticle.css';
+
+interface Props {
+  caseStudy: CaseStudy;
+  /** href for the "← Projects" back link. */
+  backHref?: string;
+}
+
+const { caseStudy: cs, backHref = '/#projects' } = Astro.props;
+---
+
+<article class={article}>
+
+  <!-- Back navigation -->
+  <a class={`${backLink} reveal`} href={backHref}>← Projects</a>
+
+  <!-- Header: kicker / h1 / lead -->
+  <header class="reveal">
+    <p class={kicker}>{cs.kicker}</p>
+    <h1 class={title}>{cs.title}</h1>
+  </header>
+
+  <p class={`${lead} reveal`} set:html={cs.summary} />
+
+  <!-- Sections -->
+  <div class={sections}>
+    {cs.sections.map(s => (
+      <div class={`${sectionBlock} reveal`}>
+        <h2 class={sectionH2}>{s.heading}</h2>
+        <div class={sectionBody} set:html={s.body} />
+      </div>
+    ))}
+  </div>
+
+  <!-- Proof tiles (badges) -->
+  {cs.badges && cs.badges.length > 0 && (
+    <>
+      <hr class={divider} />
+      <div class={`${badgesGrid} reveal`} role="list" aria-label="Proof points">
+        {cs.badges.map(b => (
+          <div class={badgeTile} role="listitem">
+            <span class={badgeKey}>{b.label}</span>
+            <span class={`${badgeVal} mono`}>{b.value}</span>
+          </div>
+        ))}
+      </div>
+    </>
+  )}
+
+  <!-- Tech stack chips -->
+  {cs.tech && cs.tech.length > 0 && (
+    <div class={`${stackSection} reveal`}>
+      <span class={stackLabel}>Stack</span>
+      <div class={stackRow} aria-label="Technologies used">
+        {cs.tech.map(t => (
+          <Tag variant="tag">{t}</Tag>
+        ))}
+      </div>
+    </div>
+  )}
+
+  <!-- Links -->
+  {cs.links && cs.links.length > 0 && (
+    <div class={`${linksRow} reveal`} aria-label="Project links">
+      {cs.links.map(l => (
+        <Button
+          variant="ghost"
+          href={l.href}
+          rel={l.external ? 'noopener noreferrer' : undefined}
+          target={l.external ? '_blank' : undefined}
+          arrow={false}
+        >{l.label}</Button>
+      ))}
+    </div>
+  )}
+
+</article>
+
+<style is:global>
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      opacity: 0;
+      transform: translateY(14px);
+      animation: csRise 600ms cubic-bezier(.2,.7,.2,1) forwards;
+    }
+    .reveal:nth-child(2)  { animation-delay: 60ms;  }
+    .reveal:nth-child(3)  { animation-delay: 120ms; }
+    .reveal:nth-child(4)  { animation-delay: 180ms; }
+    .reveal:nth-child(5)  { animation-delay: 240ms; }
+    .reveal:nth-child(6)  { animation-delay: 300ms; }
+    .reveal:nth-child(7)  { animation-delay: 360ms; }
+    .reveal:nth-child(8)  { animation-delay: 420ms; }
+    @keyframes csRise {
+      to { opacity: 1; transform: none; }
+    }
+  }
+  .mono {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+</style>

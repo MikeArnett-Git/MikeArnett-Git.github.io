@@ -1,0 +1,42 @@
+---
+/**
+ * /projects/[slug] — Static case-study page (page layout).
+ * One route per case study, generated from the caseStudies data array.
+ * D14: uses shared CaseStudyArticle component; no per-design forks.
+ * D20: title/description drawn from data only.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import CaseStudyArticle from '../../components/CaseStudyArticle.astro';
+import { caseStudies } from '../../data/caseStudies';
+import type { CaseStudy } from '../../data/types';
+
+export function getStaticPaths() {
+  return caseStudies.map(cs => ({
+    params: { slug: cs.slug },
+    props: { caseStudy: cs },
+  }));
+}
+
+interface Props {
+  caseStudy: CaseStudy;
+}
+
+const { caseStudy: cs } = Astro.props;
+
+const plainSummary = cs.summary.replace(/<[^>]+>/g, '');
+---
+
+<BaseLayout
+  title={`${cs.title} — Case study · Mike Arnett`}
+  description={plainSummary}
+>
+  <Nav />
+
+  <main id="main">
+    <CaseStudyArticle caseStudy={cs} backHref="/#projects" />
+  </main>
+
+  <Footer />
+</BaseLayout>

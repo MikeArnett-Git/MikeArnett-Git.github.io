@@ -1,0 +1,37 @@
+---
+import {
+  footer, footWrap, footGrid, footBlock, footKey, footKeyDim,
+  footBig, footDesc, contactLink, footLinks, footLink, footBase, liveTag
+} from './Footer.css';
+import { profile } from '../data/profile';
+
+const year = new Date().getFullYear();
+---
+
+<footer id="resume" aria-labelledby="foot-h" class={footer}>
+  <div class={footWrap}>
+    <div class={footGrid}>
+      <div class={footBlock}>
+        <span class={footKey}>// <span class={footKeyDim}>contact</span></span>
+        <div class={footBig} id="foot-h">Let's build something governable.</div>
+        <p class={footDesc}>{profile.availabilityLine}</p>
+        <a class={contactLink} href={profile.github} rel="me">Reach me via GitHub &rarr;</a>
+      </div>
+
+      <div class={footBlock}>
+        <span class={footKey}>// <span class={footKeyDim}>links</span></span>
+        <div class={footLinks}>
+          <a class={footLink} href="#resume">Download résumé (PDF)</a>
+          <a class={footLink} href={profile.github} rel="me">GitHub — {profile.githubHandle}</a>
+          <a class={footLink} href="#projects">Project case studies</a>
+          <a class={footLink} href="#work">View source &amp; decisions</a>
+        </div>
+      </div>
+    </div>
+
+    <div class={footBase}>
+      <span>© {year} {profile.name} · {profile.location}</span>
+      <span class={liveTag}>● built with Astro · oklch tokens · source on GitHub</span>
+    </div>
+  </div>
+</footer>

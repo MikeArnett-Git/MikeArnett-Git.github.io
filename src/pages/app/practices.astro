@@ -1,0 +1,93 @@
+---
+/**
+ * /app/practices — Practices view.
+ * Renders practicesIntro, practiceTags as Tag chips, and beyondTheEditor list.
+ * IP-clean: practices only, no proprietary methods (D20).
+ * D14: reuses widgetCard/widgetHead/widgetH2/summaryText from Overview.css.
+ */
+import AppShellLayout from '../../layouts/AppShellLayout.astro';
+import Tag from '../../components/primitives/Tag.astro';
+import { viewStack, viewH1 } from '../../styles/appView.css';
+import {
+  widgetCard, widgetHead, widgetH2, widgetHint,
+  summaryText, focusItem, focusBullet, focusText, focusFt,
+} from '../../components/widgets/Overview.css';
+import { practicesIntro, practiceTags, beyondTheEditor } from '../../data/practices';
+---
+
+<AppShellLayout
+  title="Practices — Mike Arnett · Senior Full-Stack Software Engineer"
+  description="Mike Arnett's engineering practices — architecture-first, ADR-driven, no-regression migrations."
+  activeView="practices"
+  viewLabel="Practices"
+>
+  <section class={viewStack} aria-label="Engineering practices">
+    <h1 class={viewH1}>Practices</h1>
+
+    <!-- Intro + practice tags -->
+    <article class={`${widgetCard} reveal`}>
+      <div class={widgetHead}>
+        <h2 class={widgetH2}>Engineering worldview</h2>
+        <span class={widgetHint}>principles, not methods</span>
+      </div>
+      <p class={summaryText}>
+        {practicesIntro.before}{' '}
+        <strong>{practicesIntro.emphasis}</strong>{' '}
+        {practicesIntro.after}
+      </p>
+      <div role="list" aria-label="Practice tags" style="display:flex;flex-wrap:wrap;gap:10px">
+        {practiceTags.map(tag => (
+          <div role="listitem">
+            <Tag variant="tag">{tag}</Tag>
+          </div>
+        ))}
+      </div>
+    </article>
+
+    <!-- Beyond the editor -->
+    <article class={`${widgetCard} reveal`}>
+      <div class={widgetHead}>
+        <h2 class={widgetH2}>Beyond the editor</h2>
+        <span class={widgetHint}>interests</span>
+      </div>
+      <div>
+        {beyondTheEditor.map(item => (
+          <div class={focusItem}>
+            <span class={focusBullet} aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:15px;height:15px">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </span>
+            <span class={focusText}>
+              <span class={focusFt}>{item}</span>
+            </span>
+          </div>
+        ))}
+      </div>
+    </article>
+  </section>
+</AppShellLayout>
+
+<style is:global>
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      opacity: 0;
+      transform: translateY(14px);
+      animation: viewRise 600ms cubic-bezier(.2,.7,.2,1) forwards;
+    }
+    .reveal:nth-child(2)  { animation-delay: 60ms;  }
+    .reveal:nth-child(3)  { animation-delay: 120ms; }
+    .reveal:nth-child(4)  { animation-delay: 180ms; }
+    .reveal:nth-child(5)  { animation-delay: 240ms; }
+    .reveal:nth-child(6)  { animation-delay: 300ms; }
+    .reveal:nth-child(7)  { animation-delay: 360ms; }
+    .reveal:nth-child(8)  { animation-delay: 420ms; }
+    @keyframes viewRise {
+      to { opacity: 1; transform: none; }
+    }
+  }
+  .mono {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+</style>

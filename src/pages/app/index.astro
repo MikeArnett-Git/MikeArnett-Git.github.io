@@ -1,0 +1,281 @@
+---
+/**
+ * /app — Dashboard Overview.
+ * D19: the app-shell's "home" view with D3 widget dashboard.
+ * D14: reuses existing feature components (StatTiles/MetricTile, ExperienceEntry)
+ *      + new widget components (SkillsBars, ScopeViz, ActivityHeatmap).
+ * D18: widgets are config/data-driven (arrays passed as props).
+ */
+import AppShellLayout from '../../layouts/AppShellLayout.astro';
+import Icon from '../../components/primitives/Icon.astro';
+import SkillsBars from '../../components/widgets/SkillsBars.astro';
+import ScopeViz from '../../components/widgets/ScopeViz.astro';
+import ActivityHeatmap from '../../components/widgets/ActivityHeatmap.astro';
+import { overviewGrid,
+  col12, col7, col5,
+  widgetCard, profileCard,
+  profileTop, profileAvatar, profileId, profileH1, profileRole, profileLoc,
+  statusRow, statusChip, statusChipLive,
+  widgetHead, widgetH2, widgetHint, viewAll,
+  summaryText,
+  focusCard, focusItem, focusBullet, focusText, focusFt, focusFd,
+  availCard, availHead, availList, availCta,
+  metricsGrid, metricItem, metricKey, metricVal, metricLab,
+  liveColor, liveDot, liveDotLg,
+  projList, projRow, projIco, projMeta, projMetaPn, projMetaPd, projTag, projTagLive,
+  featExpCard, expOrg, expLogo, expOrgMeta, expOrgName, expOrgPos, expYear,
+  expProblem, expResults, expResult, expResultKey, expResultVal, expResultArrow,
+  expMethod,
+} from '../../components/widgets/Overview.css';
+import { skills, skillExtras } from '../../data/skills';
+import { projects } from '../../data/projects';
+import { metrics } from '../../data/metrics';
+import { profile } from '../../data/profile';
+---
+
+<AppShellLayout
+  title="Overview — Mike Arnett · Senior Full-Stack Software Engineer"
+  description="Mike Arnett — senior full-stack software engineer: AI systems and developer tools. Dashboard overview."
+  activeView="overview"
+  viewLabel="Overview"
+>
+
+  <section aria-label="Profile overview">
+    <div class={overviewGrid}>
+
+      <!-- Profile card (hero) -->
+      <article class={`${widgetCard} ${profileCard} ${col7} reveal`}>
+        <div class={profileTop}>
+          <div class={profileAvatar} aria-hidden="true">MA</div>
+          <div class={profileId}>
+            <h1 class={profileH1}>{profile.name}</h1>
+            <span class={profileRole}>{profile.title}</span>
+            <span class={profileLoc}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:14px;height:14px;opacity:0.7;flex-shrink:0">
+                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+              {profile.locationDetail}
+            </span>
+          </div>
+        </div>
+        <div class={statusRow}>
+          <span class={`${statusChip} ${statusChipLive}`}>
+            <span aria-hidden="true" class={liveDot}></span>
+            Available
+          </span>
+          <span class={statusChip}>AU remote / hybrid</span>
+          <span class={statusChip}>Remote-international</span>
+        </div>
+      </article>
+
+      <!-- Availability widget -->
+      <article class={`${widgetCard} ${availCard} ${col5} reveal`}>
+        <div class={availHead}>
+          <span aria-hidden="true" class={liveDotLg}></span>
+          <h2 class={widgetH2}>Available for…</h2>
+        </div>
+        <ul class={availList}>
+          {profile.availableFor.map(item => (
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class={liveColor} style="width:16px;height:16px;flex-shrink:0;margin-top:3px">
+                <path d="M20 6 9 17l-5-5"/>
+              </svg>
+              {item}
+            </li>
+          ))}
+        </ul>
+        <a class={availCta} href={profile.github} target="_blank" rel="noopener noreferrer">
+          Get in touch via GitHub
+          <Icon name="arrowRight" size={16} />
+        </a>
+      </article>
+
+      <!-- Summary -->
+      <article class={`${widgetCard} ${col7} reveal`}>
+        <div class={widgetHead}>
+          <h2 class={widgetH2}>Summary</h2>
+        </div>
+        <p class={summaryText}>
+          <strong>{profile.summaryLead}</strong>
+          {' '}{profile.summaryBody}
+        </p>
+      </article>
+
+      <!-- Currently / focus widget -->
+      <article class={`${widgetCard} ${focusCard} ${col5} reveal`}>
+        <div class={widgetHead}>
+          <h2 class={widgetH2}>Currently</h2>
+          <span class={widgetHint}>in flight</span>
+        </div>
+        <div class={focusItem}>
+          <span class={focusBullet} aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:15px;height:15px">
+              <circle cx="12" cy="12" r="9"/>
+              <path d="M12 7v5l3 2"/>
+            </svg>
+          </span>
+          <span class={focusText}>
+            <span class={focusFt}>Building agent-pm</span>
+            <span class={focusFd}>Governance control-plane for AI agents</span>
+          </span>
+        </div>
+        <div class={focusItem}>
+          <span class={focusBullet} aria-hidden="true">
+            <Icon name="layers" size={15} stroke={1.9} />
+          </span>
+          <span class={focusText}>
+            <span class={focusFt}>spatial-canvas engine</span>
+            <span class={focusFd}>Domain-agnostic visualisation substrate</span>
+          </span>
+        </div>
+        <div class={focusItem}>
+          <span class={focusBullet} aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:15px;height:15px">
+              <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </span>
+          <span class={focusText}>
+            <span class={focusFt}>This site, in the open</span>
+            <span class={focusFd}>A live, inspectable example</span>
+          </span>
+        </div>
+      </article>
+
+      <!-- Proof point metric tiles -->
+      <article class={`${widgetCard} ${col12} reveal`}>
+        <div class={widgetHead}>
+          <h2 class={widgetH2}>Proof points</h2>
+          <span class={widgetHint}>measured outcomes</span>
+        </div>
+        <div class={metricsGrid} role="list" aria-label="Proof points">
+          {metrics.map(m => (
+            <div class={metricItem} role="listitem">
+              <span class={metricKey}>{m.key}</span>
+              <span class={`${metricVal} mono`}>{m.value}</span>
+              <span class={metricLab}>{m.context}</span>
+            </div>
+          ))}
+        </div>
+      </article>
+
+      <!-- Skills bars widget -->
+      <article class={`${widgetCard} ${col5} reveal`}>
+        <div class={widgetHead}>
+          <h2 class={widgetH2}>Skills</h2>
+          <span class={widgetHint}>core stack</span>
+        </div>
+        <SkillsBars skills={skills} extras={skillExtras} extrasLabel="Additional tooling" />
+      </article>
+
+      <!-- Featured experience widget -->
+      <article class={`${widgetCard} ${featExpCard} ${col7} reveal`}>
+        <div class={widgetHead}>
+          <h2 class={widgetH2}>Featured experience</h2>
+          <a class={viewAll} href="/app/experience">
+            All experience
+            <Icon name="arrowRight" size={14} />
+          </a>
+        </div>
+        <div class={expOrg}>
+          <div class={expLogo} aria-hidden="true">C</div>
+          <div class={expOrgMeta}>
+            <span class={expOrgName}>Compass Education</span>
+            <span class={expOrgPos}>Software Engineer · Griddle</span>
+          </div>
+          <span class={expYear}>2021</span>
+        </div>
+        <p class={expProblem}>
+          Rebuilt Griddle's hero feature — <strong>the timetable grid</strong> — which froze, crashed
+          and was unreleasable, against a hard <strong>once-a-year</strong> timetabling deadline.
+        </p>
+        <div class={expResults}>
+          <div class={expResult}>
+            <span class={expResultKey}>first render</span>
+            <span class={`${expResultVal} mono`}>&gt;15s <span class={expResultArrow}>→</span> &lt;1s</span>
+          </div>
+          <div class={expResult}>
+            <span class={expResultKey}>full render</span>
+            <span class={`${expResultVal} mono`}>freeze <span class={expResultArrow}>→</span> &lt;4s</span>
+          </div>
+        </div>
+        <p class={expMethod}>
+          Achieved via <code>query fragmentation</code> + <code>hand-written SQL</code>.
+          The rebuild <strong>became the app's core</strong> and set the <strong>team standard</strong>,
+          shipped to every Compass school.
+        </p>
+      </article>
+
+      <!-- Scope viz widget -->
+      <article class={`${widgetCard} ${col5} reveal`}>
+        <div class={widgetHead}>
+          <h2 class={widgetH2}>Scoped agents</h2>
+          <span class={widgetHint}>capability ↓ / approval ↑</span>
+        </div>
+        <ScopeViz />
+      </article>
+
+      <!-- Projects compact list -->
+      <article class={`${widgetCard} ${col7} reveal`}>
+        <div class={widgetHead}>
+          <h2 class={widgetH2}>Projects</h2>
+          <span class={widgetHint}>composable AI · domain-agnostic engines</span>
+          <a class={viewAll} href="/app/projects">
+            View all
+            <Icon name="arrowRight" size={14} />
+          </a>
+        </div>
+        <div class={projList}>
+          {projects.map(p => (
+            <a class={projRow} href={`/app/projects/${p.id}`}>
+              <span class={projIco} aria-hidden="true">
+                <Icon name="layers" size={18} stroke={1.8} />
+              </span>
+              <span class={projMeta}>
+                <span class={projMetaPn}>{p.name}</span>
+                <span class={projMetaPd}>{p.shortDescription}</span>
+              </span>
+              <span class={p.status === 'live' ? projTagLive : projTag}>{p.status === 'live' ? 'live' : p.tag}</span>
+            </a>
+          ))}
+        </div>
+      </article>
+
+      <!-- Activity heatmap -->
+      <article class={`${widgetCard} ${col12} reveal`}>
+        <div class={widgetHead}>
+          <h2 class={widgetH2}>Activity</h2>
+          <span class={widgetHint}>contributions · last 16 weeks</span>
+        </div>
+        <ActivityHeatmap weeks={16} seed={42} />
+      </article>
+
+    </div>
+  </section>
+
+</AppShellLayout>
+
+<style is:global>
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      opacity: 0;
+      transform: translateY(14px);
+      animation: overviewRise 600ms cubic-bezier(.2,.7,.2,1) forwards;
+    }
+    .reveal:nth-child(2)  { animation-delay: 60ms;  }
+    .reveal:nth-child(3)  { animation-delay: 120ms; }
+    .reveal:nth-child(4)  { animation-delay: 180ms; }
+    .reveal:nth-child(5)  { animation-delay: 240ms; }
+    .reveal:nth-child(6)  { animation-delay: 300ms; }
+    .reveal:nth-child(7)  { animation-delay: 360ms; }
+    .reveal:nth-child(8)  { animation-delay: 420ms; }
+    @keyframes overviewRise {
+      to { opacity: 1; transform: none; }
+    }
+  }
+  .mono {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+</style>

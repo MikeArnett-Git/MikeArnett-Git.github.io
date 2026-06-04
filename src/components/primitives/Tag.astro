@@ -1,0 +1,26 @@
+---
+/**
+ * Tag / chip primitive.
+ * variant='tag'        → hash-prefixed monospace label (used in Practices)
+ * variant='chip-live'  → green pill with dot (shipped / live)
+ * variant='chip-active'→ cyan pill with dot (in dev)
+ */
+import { tagDefault, chipLive, chipActive, chipDot } from './Tag.css';
+
+interface Props {
+  variant: 'tag' | 'chip-live' | 'chip-active';
+  dot?: boolean;
+}
+
+const { variant, dot = false } = Astro.props;
+
+const cls =
+  variant === 'tag' ? tagDefault :
+  variant === 'chip-live' ? chipLive :
+  chipActive;
+---
+
+<span class={cls}>
+  {dot && <span class={chipDot} aria-hidden="true"></span>}
+  <slot />
+</span>

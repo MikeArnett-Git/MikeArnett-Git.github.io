@@ -1,0 +1,88 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import { controlPlaneTheme } from '../styles/presets/control-plane.css';
+import { editorialTheme } from '../styles/presets/editorial.css';
+import { kineticTheme } from '../styles/presets/kinetic.css';
+import { calmConsoleTheme } from '../styles/presets/calm-console.css';
+import '../styles/global.css';
+import { THEME_DEFAULTS } from '../lib/theme';
+import ControlPanel from '../components/ControlPanel';
+import ThemeScript from '../components/ThemeScript.astro';
+import SiteHead from '../components/SiteHead.astro';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+
+// SSR: apply the default theme class + data-theme / data-layout synchronously.
+// Client: the inline pre-paint script below reads localStorage to avoid FOUC.
+const defaultTheme = THEME_DEFAULTS.theme;
+const defaultLayout = THEME_DEFAULTS.layout;
+
+// All three theme classes are emitted into the stylesheet so the client-side
+// applyTheme() can switch between them by toggling class on <html>.
+// The theme registry maps theme name → vanilla-extract theme class.
+// (VE createTheme classes = THEME axis only — D17)
+const themeClasses: Record<string, string> = {
+  'control-plane': controlPlaneTheme,
+  'editorial': editorialTheme,
+  'kinetic': kineticTheme,
+  'calm-console': calmConsoleTheme,
+};
+const defaultThemeClass = themeClasses[defaultTheme] ?? controlPlaneTheme;
+---
+
+<html
+  lang="en-AU"
+  class={defaultThemeClass}
+  data-theme={defaultTheme}
+  data-layout={defaultLayout}
+  data-mode={THEME_DEFAULTS.mode}
+  data-density={THEME_DEFAULTS.density}
+  data-motion="ok"
+>
+  <head>
+    <SiteHead title={title} description={description} />
+
+    {/* Pre-paint theme restore (no FOUC) — shared, mirrored across layouts. */}
+    <ThemeScript themeClasses={themeClasses} />
+
+    <ClientRouter />
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+    <slot />
+    {/* Floating design switcher — purely interactive chrome, no SSR needed;
+        client:only keeps it off the server render (and off the JS critical path). */}
+    <ControlPanel client:only="react" />
+  </body>
+</html>
+
+<style>
+  .skip-link {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%) translateY(-150%);
+    top: 8px;
+    z-index: 100;
+    background: var(--accent, oklch(72% 0.16 205));
+    color: oklch(16% 0.02 260);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.6rem 1rem;
+    border-radius: 4px;
+    text-decoration: none;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .skip-link {
+      transition: transform 220ms cubic-bezier(.22,.61,.36,1);
+    }
+  }
+  .skip-link:focus {
+    transform: translateX(-50%) translateY(0);
+  }
+</style>

@@ -1,0 +1,54 @@
+---
+/**
+ * /app/experience — Experience view.
+ * Renders every role via ExperienceEntry (full card: rail + body + metrics).
+ * D14: maximal reuse — no per-view style forks.
+ */
+import AppShellLayout from '../../layouts/AppShellLayout.astro';
+import ExperienceEntry from '../../components/ExperienceEntry.astro';
+import { viewStack, viewH1, viewIntro } from '../../styles/appView.css';
+import { experience } from '../../data/experience';
+---
+
+<AppShellLayout
+  title="Experience — Mike Arnett · Senior Full-Stack Software Engineer"
+  description="Mike Arnett's work experience — senior full-stack software engineer: AI systems and developer tools."
+  activeView="experience"
+  viewLabel="Experience"
+>
+  <section class={viewStack} aria-label="Work experience">
+    <header>
+      <h1 class={viewH1}>Experience</h1>
+      <p class={viewIntro}>
+        Full-stack engineering across greenfield platforms, legacy modernisation, and R&D tooling —
+        shipped to production, delivered end-to-end.
+      </p>
+    </header>
+
+    {experience.map(role => <ExperienceEntry role={role} />)}
+  </section>
+</AppShellLayout>
+
+<style is:global>
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      opacity: 0;
+      transform: translateY(14px);
+      animation: viewRise 600ms cubic-bezier(.2,.7,.2,1) forwards;
+    }
+    .reveal:nth-child(2)  { animation-delay: 60ms;  }
+    .reveal:nth-child(3)  { animation-delay: 120ms; }
+    .reveal:nth-child(4)  { animation-delay: 180ms; }
+    .reveal:nth-child(5)  { animation-delay: 240ms; }
+    .reveal:nth-child(6)  { animation-delay: 300ms; }
+    .reveal:nth-child(7)  { animation-delay: 360ms; }
+    .reveal:nth-child(8)  { animation-delay: 420ms; }
+    @keyframes viewRise {
+      to { opacity: 1; transform: none; }
+    }
+  }
+  .mono {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+</style>

@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.astro/
+.DS_Store
+*.log
+
+# PII — never commit
+reference/
+*.odt
+
+# dev-only: design-exploration mockups (symlinked from reference/) — never deploy
+public/explorations
+
+# dev-context for AI sessions (auto-loaded from disk; not site content)
+CLAUDE.md
+.claude/settings.local.json

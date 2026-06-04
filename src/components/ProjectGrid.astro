@@ -1,0 +1,44 @@
+---
+import Tag from './primitives/Tag.astro';
+import { card, cardFeatured } from './primitives/Card.css';
+import {
+  projGrid, cardTop, cardName, cardNameFeatured, cardH3, cardP, cardFlag, cardLink,
+  scopeviz, scopevizBar, spanClass,
+} from './ProjectGrid.css';
+import { projects } from '../data/projects';
+
+interface Props {
+  /** Base path for case-study deep-links. Defaults to '/projects'. */
+  caseStudyBase?: string;
+}
+
+const { caseStudyBase = '/projects' } = Astro.props;
+
+// Decorative scopeviz bar heights for the featured card (presentational only).
+const FEATURED_BARS = ['40%', '70%', '55%', '90%', '35%', '65%', '50%', '80%'];
+
+const statusLabel = { 'in-dev': 'in dev', live: 'live' } as const;
+---
+
+<div class={projGrid}>
+  {projects.map(p => (
+    <article class={`${p.featured ? `${card} ${cardFeatured}` : card} ${spanClass[p.span]} reveal`}>
+      <div class={cardTop}>
+        <span class={p.featured ? cardNameFeatured : cardName}>{p.name}</span>
+        {p.status === 'in-dev' && <Tag variant="chip-active" dot>{statusLabel[p.status]}</Tag>}
+        {p.status === 'live' && <Tag variant="chip-live" dot>{statusLabel[p.status]}</Tag>}
+      </div>
+      <h3 class={cardH3}>{p.headline}</h3>
+      <p class={cardP}>{p.description}</p>
+      {p.featured && (
+        <div class={scopeviz} aria-hidden="true">
+          {FEATURED_BARS.map(h => <span class={scopevizBar} style={`height:${h}`}></span>)}
+        </div>
+      )}
+      <div class={cardFlag}>
+        <span>{p.category}</span>
+        <a href={`${caseStudyBase}/${p.id}`} class={cardLink}>{p.linkLabel}</a>
+      </div>
+    </article>
+  ))}
+</div>

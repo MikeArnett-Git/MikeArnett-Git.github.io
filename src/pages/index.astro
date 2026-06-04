@@ -1,0 +1,150 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+import Hero from '../components/Hero.astro';
+import StatTiles from '../components/StatTiles.astro';
+import ExperienceEntry from '../components/ExperienceEntry.astro';
+import ProjectGrid from '../components/ProjectGrid.astro';
+import Footer from '../components/Footer.astro';
+import {
+  section, wrap, sectionHead, sectionIdx, sectionH2, sectionMeta,
+  band, practicesLine, practicesEm, practiceTags, tag, beyond, beyondLabel, beyondPipe
+} from '../components/Section.css';
+import { wrap as heroWrap } from '../components/Hero.css';
+import { experience } from '../data/experience';
+import { practicesIntro, practiceTags as practiceTagItems, beyondTheEditor } from '../data/practices';
+---
+
+<BaseLayout
+  title="Mike Arnett — Senior Full-Stack Software Engineer · AI Systems & Developer Tools"
+  description="Senior full-stack software engineer specialising in AI systems and developer tools. Flexible, maintainable architecture; legacy monoliths migrated without regressions; AI agents kept scoped, consistent, auditable."
+>
+  <Nav />
+
+  <main id="main">
+    <Hero />
+
+    <!-- Stat tiles appended below hero, same wrap width -->
+    <div style="position:relative;z-index:1;">
+      <div class={heroWrap}>
+        <StatTiles />
+      </div>
+    </div>
+
+    <!-- Work -->
+    <section id="work" class={section} aria-labelledby="work-h">
+      <div class={wrap}>
+        <div class={`${sectionHead} reveal`}>
+          <span class={sectionIdx}>01</span>
+          <h2 id="work-h" class={sectionH2}>Work</h2>
+          <span class={sectionMeta}>selected · revenue-critical</span>
+        </div>
+        {experience.filter(r => r.featured).map(role => <ExperienceEntry role={role} />)}
+      </div>
+    </section>
+
+    <!-- Projects -->
+    <section id="projects" class={section} aria-labelledby="projects-h">
+      <div class={wrap}>
+        <div class={`${sectionHead} reveal`}>
+          <span class={sectionIdx}>02</span>
+          <h2 id="projects-h" class={sectionH2}>Projects</h2>
+          <span class={sectionMeta}>composable AI + programmatic pipelines · domain-agnostic engines</span>
+        </div>
+        <ProjectGrid />
+      </div>
+    </section>
+
+    <!-- Practices + About -->
+    <section id="practices" class={section} aria-labelledby="practices-h">
+      <div class={wrap}>
+        <div class={`${sectionHead} reveal`}>
+          <span class={sectionIdx}>03</span>
+          <h2 id="practices-h" class={sectionH2}>Practices</h2>
+          <span class={sectionMeta} id="about">about · how I work</span>
+        </div>
+
+        <div class={`${band} reveal`}>
+          <p class={practicesLine}>
+            {practicesIntro.before}
+            {' '}<span class={practicesEm}>{practicesIntro.emphasis}</span>{' '}
+            {practicesIntro.after}
+          </p>
+          <div class={practiceTags} aria-label="Practice keywords">
+            {practiceTagItems.map(t => <span class={tag}>{t}</span>)}
+          </div>
+
+          <div class={beyond}>
+            <span class={beyondLabel}>Beyond the editor</span>
+            {beyondTheEditor.map((b, i) => (
+              <Fragment>{i > 0 && <span class={beyondPipe}>│</span>}{b}</Fragment>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+
+  <script>
+    /* Progressive enhancement — scroll reveals + metric tick-down.
+       Static, readable state is the default. Only runs when motion is allowed.
+       Re-registered on astro:after-swap so back-nav restores reveal behaviour. */
+    function initReveal(): void {
+      var allowMotion = window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
+      if (!allowMotion || !('IntersectionObserver' in window)) return;
+
+      // Scroll reveals — only observe elements that haven't already received .in
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+      document.querySelectorAll('.reveal:not(.in)').forEach(function (el) { io.observe(el); });
+
+      // Metric count-down on "0 regressions" tile (settles to 0)
+      var counted = false;
+      var tilesEl = document.querySelector('[aria-label="Headline proof points"]');
+      if (tilesEl) {
+        var tileIO = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            if (e.isIntersecting && !counted) {
+              counted = true;
+              tileIO.disconnect();
+              var accents = document.querySelectorAll('[aria-label="Headline proof points"] [class*="metricAccent"]');
+              var target = accents[1];
+              if (target && target.textContent && target.textContent.trim() === '0') {
+                var seq = [9, 6, 3, 1, 0];
+                var i = 0;
+                var iv = setInterval(function () {
+                  if (target) target.textContent = String(seq[i]);
+                  i++;
+                  if (i >= seq.length) clearInterval(iv);
+                }, 70);
+              }
+            }
+          });
+        }, { threshold: 0.5 });
+        tileIO.observe(tilesEl);
+      }
+    }
+
+    initReveal();
+    document.addEventListener('astro:after-swap', initReveal);
+  </script>
+</BaseLayout>
+
+<style is:global>
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 600ms cubic-bezier(.22,.61,.36,1), transform 600ms cubic-bezier(.22,.61,.36,1);
+    }
+    .reveal.in {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>

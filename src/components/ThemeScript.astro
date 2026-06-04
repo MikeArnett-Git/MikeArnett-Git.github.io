@@ -1,0 +1,78 @@
+---
+/**
+ * ThemeScript — pre-paint theme restore, shared by every layout (D15 / D17 / D19).
+ *
+ * Must be `is:inline` so it runs synchronously before first paint (no FOUC) and
+ * carries no module imports. Re-runs on `astro:after-swap` because View
+ * Transitions reset <html>'s attributes to the SSR defaults on each navigation.
+ *
+ * URL is authoritative for the page ↔ app-shell split: /app* is always the
+ * dashboard layout; page routes never are (a stale 'dashboard' self-heals to
+ * control-plane). The store is corrected to match so the control panel stays
+ * accurate.
+ *
+ * `themeClasses` is passed in because each layout bundles its own set of
+ * vanilla-extract token classes.
+ */
+interface Props {
+  /** Map of theme name → vanilla-extract token class. */
+  themeClasses: Record<string, string>;
+}
+
+const { themeClasses } = Astro.props;
+---
+
+<script is:inline define:vars={{ themeClasses }}>
+  (function () {
+    var ns = 'mikearnett.theme:';
+    var defaults = {
+      theme: 'control-plane',
+      layout: 'control-plane',
+      mode: 'dark',
+      accentHue: '205',
+      fontSet: 'default',
+      motion: 'true',
+      density: 'comfortable',
+    };
+    function read(key) {
+      try { return localStorage.getItem(ns + key) || defaults[key]; }
+      catch (e) { return defaults[key]; }
+    }
+    function write(key, val) {
+      try { localStorage.setItem(ns + key, val); } catch (e) {}
+    }
+    function applyTheme() {
+      var root = document.documentElement;
+      var path = location.pathname;
+      var onApp = path === '/app' || path.indexOf('/app/') === 0;
+
+      var theme = read('theme');
+      var layout;
+      if (onApp) {
+        layout = 'dashboard';
+        if (read('layout') !== 'dashboard') write('layout', 'dashboard');
+      } else {
+        layout = read('layout');
+        if (layout === 'dashboard') { layout = 'control-plane'; write('layout', layout); }
+      }
+
+      var allClasses = Object.values(themeClasses);
+      allClasses.forEach(function (cls) { root.classList.remove(cls); });
+      var targetClass = themeClasses[theme] || themeClasses['control-plane'];
+      if (targetClass) root.classList.add(targetClass);
+
+      root.setAttribute('data-theme',  theme);
+      root.setAttribute('data-layout', layout);
+      root.setAttribute('data-mode',    read('mode'));
+      root.setAttribute('data-density', read('density'));
+      root.setAttribute('data-motion',  read('motion') === 'false' ? 'reduce' : 'ok');
+      root.style.setProperty('--accent-hue', read('accentHue'));
+    }
+
+    applyTheme();
+    if (!window.__maThemeSwapBound) {
+      window.__maThemeSwapBound = true;
+      document.addEventListener('astro:after-swap', applyTheme);
+    }
+  })();
+</script>
