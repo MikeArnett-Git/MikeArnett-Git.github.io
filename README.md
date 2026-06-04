@@ -3,7 +3,7 @@
 **Senior full-stack software engineer — AI systems and developer tools.**
 Static resume/portfolio site that is simultaneously a living demonstration of engineering practice.
 
-`Astro 5` · `React islands` · `vanilla-extract + oklch` · `GitHub Pages` · `TypeScript`
+`Astro 5` · `Preact islands` · `vanilla-extract + oklch` · `GitHub Pages` · `TypeScript`
 
 ---
 
@@ -34,7 +34,7 @@ This is a direct re-demonstration of the Cloudhouse in-app theming/layout-switch
 | Concern | Choice | Rationale |
 |---|---|---|
 | Site framework | Astro 5 (static + MPA) | Zero JS by default; islands only where needed; fast first paint + reliable crawler/social-preview HTML |
-| Interactivity | React islands (`client:idle` / `client:load`) | Minimal JS budget; right tool for the control panel + dashboard widgets |
+| Interactivity | Preact islands via `preact/compat` (`client:only`) | ~4 KB runtime vs ~58 KB React; keeps the React API; homepage JS ~18 KB gzip |
 | Styling | vanilla-extract + oklch design tokens | Build-time CSS; type-safe theme contract; perceptually-uniform palette; no runtime cost |
 | State | nanostores (persistent map) | Framework-agnostic; tiny; serialises to `localStorage` per-key |
 | Hosting | GitHub Pages root user-site | Clean root URL; source-as-proof in version control; free |
@@ -68,7 +68,7 @@ src/
   components/
     primitives/            # dumb token-styled atoms (Button, Card, Tag, MetricTile, …)
     widgets/               # dashboard-only: SkillsBars, ScopeViz, ActivityHeatmap
-    ControlPanel.tsx        # React island — theme/layout consumer
+    ControlPanel.tsx        # Preact island (React API) — theme/layout consumer
     Hero.astro  Nav.astro  ExperienceEntry.astro  ProjectGrid.astro  …
   layouts/
     BaseLayout.astro       # <head>, ClientRouter, pre-paint inline script (no FOUC)
