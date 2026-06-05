@@ -2,12 +2,12 @@
  * SkillsBars widget styles — vanilla-extract.
  * Token-driven: works across all 4 themes (D14/D17).
  */
-import { style, keyframes } from '@vanilla-extract/css';
+import { keyframes, style } from '@vanilla-extract/css';
 import { contract } from '../../styles/contract.css';
 
 const barGrow = keyframes({
   from: { width: '0' },
-  to:   { width: 'var(--bar-w, 0%)' },
+  to: { width: 'var(--bar-w, 0%)' },
 });
 
 export const skillsList = style({

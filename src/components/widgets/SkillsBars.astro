@@ -1,4 +1,5 @@
 ---
+import type { ExtraTag, Skill } from '../../data/types';
 /**
  * SkillsBars — labelled bar chart of skills.
  * Config/data-driven (D18): accepts a `skills` array so the type could
@@ -8,10 +9,15 @@
  * Animation is CSS-only, gated by prefers-reduced-motion.
  */
 import {
-  skillsList, skillRow, skillName, skillMeta,
-  skillBarTrack, skillBarFill, skillCloud, skillTag,
+  skillBarFill,
+  skillBarTrack,
+  skillCloud,
+  skillMeta,
+  skillName,
+  skillRow,
+  skillsList,
+  skillTag,
 } from './SkillsBars.css';
-import type { Skill, ExtraTag } from '../../data/types';
 
 interface Props {
   skills: Skill[];

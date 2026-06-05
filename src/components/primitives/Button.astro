@@ -5,13 +5,13 @@
  * variant: 'primary' | 'ghost' | 'nav-cta'
  * arrow: show trailing arrow glyph (defaults true for primary/ghost, false for nav-cta)
  */
-import { btnPrimary, btnGhost, btnNavCta, btnArrow } from './Button.css';
+import { btnArrow, btnGhost, btnNavCta, btnPrimary } from './Button.css';
 
 interface Props {
   variant: 'primary' | 'ghost' | 'nav-cta';
   href?: string;
-  rel?: string;
-  target?: string;
+  rel?: string | undefined;
+  target?: string | undefined;
   arrow?: boolean;
 }
 
@@ -19,10 +19,7 @@ const { variant, href, rel, target, arrow } = Astro.props;
 
 const showArrow = arrow !== undefined ? arrow : variant !== 'nav-cta';
 
-const cls =
-  variant === 'primary' ? btnPrimary :
-  variant === 'ghost'   ? btnGhost :
-  btnNavCta;
+const cls = variant === 'primary' ? btnPrimary : variant === 'ghost' ? btnGhost : btnNavCta;
 ---
 
 {href ? (

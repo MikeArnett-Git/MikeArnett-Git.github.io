@@ -3,7 +3,7 @@
  * Token-driven radial relationship mini-viz (inline SVG).
  * Works across all 4 themes (D14/D17).
  */
-import { style, keyframes } from '@vanilla-extract/css';
+import { keyframes, style } from '@vanilla-extract/css';
 import { contract } from '../../styles/contract.css';
 
 export const scopeVizContainer = style({
@@ -20,7 +20,7 @@ export const scopeVizSvg = style({
 
 const pulse = keyframes({
   '0%, 100%': { opacity: 0.5 },
-  '50%':      { opacity: 1   },
+  '50%': { opacity: 1 },
 });
 
 export const scopePulse = style({

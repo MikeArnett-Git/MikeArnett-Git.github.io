@@ -11,7 +11,7 @@
  * `body` / `highlights` are author-controlled HTML; <b> marks emphasis (styled by
  * ExperienceEntry.css.ts), and < / > in figures are escaped entities.
  */
-import type { ExperienceRole } from './types';
+import type { ExperienceRole, FeaturedWidgetContent } from './types';
 
 export const experience: ExperienceRole[] = [
   {
@@ -28,7 +28,7 @@ export const experience: ExperienceRole[] = [
     body:
       'Lead frontend engineer on Guardian. Built a flexible, modular front-end platform from scratch ' +
       'and used it to incrementally migrate and integrate a decade-old monolith — presenting one ' +
-      "cohesive product while modernising underneath, at <b>zero regression risk</b>.",
+      'cohesive product while modernising underneath, at <b>zero regression risk</b>.',
     highlights: [
       'Built a modular front-end platform from scratch, then used it to <b>incrementally migrate a decade-old monolith</b> — app-shells + per-technology coexistence presenting a single cohesive product, at zero regression risk.',
       'Established standards and tooling for <b>AI-assisted development</b> — keeping AI-accelerated work consistent, auditable, and high-quality across teams.',
@@ -67,6 +67,15 @@ export const experience: ExperienceRole[] = [
       { label: 'full-data', value: 'freeze → <4s' },
       { label: 'became', value: 'team standard' },
     ],
+    featuredWidget: {
+      problem:
+        'Rebuilt Griddle’s hero feature — <strong>the timetable grid</strong> — which froze, crashed' +
+        ' and was unreleasable, against a hard <strong>once-a-year</strong> timetabling deadline.',
+      method:
+        'Achieved via <code>query fragmentation</code> + <code>hand-written SQL</code>.' +
+        ' The rebuild <strong>became the app’s core</strong> and set the <strong>team standard</strong>,' +
+        ' shipped to every Compass school.',
+    } satisfies FeaturedWidgetContent,
   },
   {
     id: 'compass-rnd',

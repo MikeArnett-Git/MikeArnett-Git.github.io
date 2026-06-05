@@ -1,12 +1,21 @@
 ---
-import Tag from './primitives/Tag.astro';
-import { articleCard } from './primitives/Card.css';
-import {
-  expRail, expOrg, expRow, expRowLabel,
-  expBody, expBodyH3, expBodyP, expMetrics, expMetric, expMetricBold,
-  expHighlights, expHighlightItem
-} from './ExperienceEntry.css';
 import type { ExperienceRole } from '../data/types';
+import {
+  expBody,
+  expBodyH3,
+  expBodyP,
+  expHighlightItem,
+  expHighlights,
+  expMetric,
+  expMetricBold,
+  expMetrics,
+  expOrg,
+  expRail,
+  expRow,
+  expRowLabel,
+} from './ExperienceEntry.css';
+import { articleCard } from './primitives/Card.css';
+import Tag from './primitives/Tag.astro';
 
 interface Props {
   role: ExperienceRole;

@@ -6,8 +6,12 @@
  * Animations gated by prefers-reduced-motion (CSS).
  */
 import {
-  scopeVizContainer, scopeVizSvg, scopePulse,
-  scopeLegend, scopeLegendItem, scopeLegendDot,
+  scopeLegend,
+  scopeLegendDot,
+  scopeLegendItem,
+  scopePulse,
+  scopeVizContainer,
+  scopeVizSvg,
 } from './ScopeViz.css';
 
 export interface ScopeNode {
@@ -28,10 +32,10 @@ interface Props {
 const {
   coreLabel = 'scoped\ncore',
   nodes = [
-    { cx: 60,  cy: 45,  label: 'dispatch', delay: '0s'    },
-    { cx: 240, cy: 45,  label: 'routing',  delay: '0.4s'  },
-    { cx: 60,  cy: 155, label: 'approval', delay: '0.8s'  },
-    { cx: 240, cy: 155, label: 'audit',    delay: '1.2s'  },
+    { cx: 60, cy: 45, label: 'dispatch', delay: '0s' },
+    { cx: 240, cy: 45, label: 'routing', delay: '0.4s' },
+    { cx: 60, cy: 155, label: 'approval', delay: '0.8s' },
+    { cx: 240, cy: 155, label: 'audit', delay: '1.2s' },
   ],
   ariaLabel = 'Relationship diagram: a scoped, auditable core mediates channels — dispatch, routing, approval and audit. Every channel is owned, logged and gateable.',
 } = Astro.props;

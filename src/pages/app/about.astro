@@ -1,4 +1,6 @@
 ---
+import Button from '../../components/primitives/Button.astro';
+import { beyondTheEditor, profile } from '../../data';
 /**
  * /app/about — About view.
  * Profile header, about paragraphs, beyondTheEditor, availability, contact CTA.
@@ -6,17 +8,30 @@
  * D14: reuses widgetCard/widgetHead/widgetH2/summaryText/availList/availCta/availCard from Overview.css.
  */
 import AppShellLayout from '../../layouts/AppShellLayout.astro';
-import Button from '../../components/primitives/Button.astro';
-import { viewStack, viewIntro } from '../../styles/appView.css';
+import { viewIntro, viewStack } from '../../styles/appView.css';
 import {
-  widgetCard, widgetHead, widgetH2, widgetHint,
+  availCard,
+  availHead,
+  availList,
+  focusBullet,
+  focusFt,
+  focusItem,
+  focusText,
+  liveColor,
+  liveDotLg,
+  profileAvatar,
+  profileCard,
+  profileH1,
+  profileId,
+  profileLoc,
+  profileRole,
+  profileTop,
   summaryText,
-  profileCard, profileTop, profileAvatar, profileId, profileH1, profileRole, profileLoc,
-  availCard, availHead, availList, liveDotLg, liveColor,
-  focusItem, focusBullet, focusText, focusFt,
-} from '../../components/widgets/Overview.css';
-import { profile } from '../../data/profile';
-import { beyondTheEditor } from '../../data/practices';
+  widgetCard,
+  widgetH2,
+  widgetHead,
+  widgetHint,
+} from '../../styles/views/shared.css';
 ---
 
 <AppShellLayout

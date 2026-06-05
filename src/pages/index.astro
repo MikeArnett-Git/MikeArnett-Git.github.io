@@ -1,18 +1,33 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import Nav from '../components/Nav.astro';
-import Hero from '../components/Hero.astro';
-import StatTiles from '../components/StatTiles.astro';
 import ExperienceEntry from '../components/ExperienceEntry.astro';
-import ProjectGrid from '../components/ProjectGrid.astro';
 import Footer from '../components/Footer.astro';
+import Hero from '../components/Hero.astro';
+import Nav from '../components/Nav.astro';
+import ProjectGrid from '../components/ProjectGrid.astro';
 import {
-  section, wrap, sectionHead, sectionIdx, sectionH2, sectionMeta,
-  band, practicesLine, practicesEm, practiceTags, tag, beyond, beyondLabel, beyondPipe
+  band,
+  beyond,
+  beyondLabel,
+  beyondPipe,
+  practicesEm,
+  practicesLine,
+  practiceTags,
+  section,
+  sectionH2,
+  sectionHead,
+  sectionIdx,
+  sectionMeta,
+  tag,
 } from '../components/Section.css';
-import { wrap as heroWrap } from '../components/Hero.css';
-import { experience } from '../data/experience';
-import { practicesIntro, practiceTags as practiceTagItems, beyondTheEditor } from '../data/practices';
+import StatTiles from '../components/StatTiles.astro';
+import {
+  beyondTheEditor,
+  experience,
+  practicesIntro,
+  practiceTags as practiceTagItems,
+} from '../data';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { wrap } from '../styles/layout.css';
 ---
 
 <BaseLayout
@@ -24,11 +39,9 @@ import { practicesIntro, practiceTags as practiceTagItems, beyondTheEditor } fro
   <main id="main">
     <Hero />
 
-    <!-- Stat tiles appended below hero, same wrap width -->
-    <div style="position:relative;z-index:1;">
-      <div class={heroWrap}>
-        <StatTiles />
-      </div>
+    <!-- Stat tiles appended below hero, same wrap width (wrap carries position/z-index) -->
+    <div class={wrap}>
+      <StatTiles />
     </div>
 
     <!-- Work -->

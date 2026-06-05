@@ -1,4 +1,7 @@
 ---
+import Icon from '../../components/primitives/Icon.astro';
+import SkillsBars from '../../components/widgets/SkillsBars.astro';
+import { education, experience, profile, skillExtras, skills } from '../../data';
 /**
  * /app/resume — Résumé view.
  * Condensed single-column: summary → experience (compact list) → skills → education → contact.
@@ -8,19 +11,16 @@
  *      Contact = GitHub only (A3 deferred).
  */
 import AppShellLayout from '../../layouts/AppShellLayout.astro';
-import SkillsBars from '../../components/widgets/SkillsBars.astro';
-import Icon from '../../components/primitives/Icon.astro';
-import { viewStack, viewH1, viewIntro } from '../../styles/appView.css';
+import { viewH1, viewIntro, viewStack } from '../../styles/appView.css';
 import {
-  widgetCard, widgetHead, widgetH2, widgetHint,
-  summaryText,
   expYear,
+  summaryText,
   viewAll,
-} from '../../components/widgets/Overview.css';
-import { profile } from '../../data/profile';
-import { experience } from '../../data/experience';
-import { skills, skillExtras } from '../../data/skills';
-import { education } from '../../data/education';
+  widgetCard,
+  widgetH2,
+  widgetHead,
+  widgetHint,
+} from '../../styles/views/shared.css';
 ---
 
 <AppShellLayout

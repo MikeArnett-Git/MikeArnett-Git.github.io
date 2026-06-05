@@ -1,4 +1,9 @@
 ---
+import Icon from '../../components/primitives/Icon.astro';
+import ActivityHeatmap from '../../components/widgets/ActivityHeatmap.astro';
+import ScopeViz from '../../components/widgets/ScopeViz.astro';
+import SkillsBars from '../../components/widgets/SkillsBars.astro';
+import { experience, metrics, profile, projects, skillExtras, skills } from '../../data';
 /**
  * /app — Dashboard Overview.
  * D19: the app-shell's "home" view with D3 widget dashboard.
@@ -7,30 +12,73 @@
  * D18: widgets are config/data-driven (arrays passed as props).
  */
 import AppShellLayout from '../../layouts/AppShellLayout.astro';
-import Icon from '../../components/primitives/Icon.astro';
-import SkillsBars from '../../components/widgets/SkillsBars.astro';
-import ScopeViz from '../../components/widgets/ScopeViz.astro';
-import ActivityHeatmap from '../../components/widgets/ActivityHeatmap.astro';
-import { overviewGrid,
-  col12, col7, col5,
-  widgetCard, profileCard,
-  profileTop, profileAvatar, profileId, profileH1, profileRole, profileLoc,
-  statusRow, statusChip, statusChipLive,
-  widgetHead, widgetH2, widgetHint, viewAll,
-  summaryText,
-  focusCard, focusItem, focusBullet, focusText, focusFt, focusFd,
-  availCard, availHead, availList, availCta,
-  metricsGrid, metricItem, metricKey, metricVal, metricLab,
-  liveColor, liveDot, liveDotLg,
-  projList, projRow, projIco, projMeta, projMetaPn, projMetaPd, projTag, projTagLive,
-  featExpCard, expOrg, expLogo, expOrgMeta, expOrgName, expOrgPos, expYear,
-  expProblem, expResults, expResult, expResultKey, expResultVal, expResultArrow,
+import {
+  availCta,
+  col5,
+  col7,
+  col12,
+  expLogo,
   expMethod,
-} from '../../components/widgets/Overview.css';
-import { skills, skillExtras } from '../../data/skills';
-import { projects } from '../../data/projects';
-import { metrics } from '../../data/metrics';
-import { profile } from '../../data/profile';
+  expOrg,
+  expOrgMeta,
+  expOrgName,
+  expOrgPos,
+  expProblem,
+  expResult,
+  expResultArrow,
+  expResultKey,
+  expResults,
+  expResultVal,
+  featExpCard,
+  focusCard,
+  focusFd,
+  liveDot,
+  metricItem,
+  metricKey,
+  metricLab,
+  metricsGrid,
+  metricVal,
+  overviewGrid,
+  projIco,
+  projList,
+  projMeta,
+  projMetaPd,
+  projMetaPn,
+  projRow,
+  projTag,
+  projTagLive,
+  statusChip,
+  statusChipLive,
+  statusRow,
+} from '../../styles/views/overview.css';
+import {
+  availCard,
+  availHead,
+  availList,
+  expYear,
+  focusBullet,
+  focusFt,
+  focusItem,
+  focusText,
+  liveColor,
+  liveDotLg,
+  profileAvatar,
+  profileCard,
+  profileH1,
+  profileId,
+  profileLoc,
+  profileRole,
+  profileTop,
+  summaryText,
+  viewAll,
+  widgetCard,
+  widgetH2,
+  widgetHead,
+  widgetHint,
+} from '../../styles/views/shared.css';
+
+const featExp = experience.find((r) => r.id === 'compass-griddle');
+if (!featExp) throw new Error('Overview: missing experience record "compass-griddle"');
 ---
 
 <AppShellLayout
@@ -179,32 +227,26 @@ import { profile } from '../../data/profile';
           </a>
         </div>
         <div class={expOrg}>
-          <div class={expLogo} aria-hidden="true">C</div>
+          <div class={expLogo} aria-hidden="true">{featExp.org[0]}</div>
           <div class={expOrgMeta}>
-            <span class={expOrgName}>Compass Education</span>
-            <span class={expOrgPos}>Software Engineer · Griddle</span>
+            <span class={expOrgName}>{featExp.org}</span>
+            <span class={expOrgPos}>{featExp.role} · {featExp.surface?.split(' ·')[0]}</span>
           </div>
-          <span class={expYear}>2021</span>
+          <span class={expYear}>{featExp.period.slice(-4)}</span>
         </div>
-        <p class={expProblem}>
-          Rebuilt Griddle's hero feature — <strong>the timetable grid</strong> — which froze, crashed
-          and was unreleasable, against a hard <strong>once-a-year</strong> timetabling deadline.
-        </p>
+        <p class={expProblem} set:html={featExp.featuredWidget?.problem} />
         <div class={expResults}>
-          <div class={expResult}>
-            <span class={expResultKey}>first render</span>
-            <span class={`${expResultVal} mono`}>&gt;15s <span class={expResultArrow}>→</span> &lt;1s</span>
-          </div>
-          <div class={expResult}>
-            <span class={expResultKey}>full render</span>
-            <span class={`${expResultVal} mono`}>freeze <span class={expResultArrow}>→</span> &lt;4s</span>
-          </div>
+          {featExp.metrics.filter(m => m.label === 'first render' || m.label === 'full-data').map(m => {
+            const [before, after] = m.value.split(' → ');
+            return (
+              <div class={expResult}>
+                <span class={expResultKey}>{m.label === 'full-data' ? 'full render' : m.label}</span>
+                <span class={`${expResultVal} mono`}>{before} <span class={expResultArrow}>→</span> {after}</span>
+              </div>
+            );
+          })}
         </div>
-        <p class={expMethod}>
-          Achieved via <code>query fragmentation</code> + <code>hand-written SQL</code>.
-          The rebuild <strong>became the app's core</strong> and set the <strong>team standard</strong>,
-          shipped to every Compass school.
-        </p>
+        <p class={expMethod} set:html={featExp.featuredWidget?.method} />
       </article>
 
       <!-- Scope viz widget -->

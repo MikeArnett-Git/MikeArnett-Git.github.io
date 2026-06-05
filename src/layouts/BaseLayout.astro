@@ -1,14 +1,11 @@
 ---
 import { ClientRouter } from 'astro:transitions';
-import { controlPlaneTheme } from '../styles/presets/control-plane.css';
-import { editorialTheme } from '../styles/presets/editorial.css';
-import { kineticTheme } from '../styles/presets/kinetic.css';
-import { calmConsoleTheme } from '../styles/presets/calm-console.css';
 import '../styles/global.css';
-import { THEME_DEFAULTS } from '../lib/theme';
 import ControlPanel from '../components/ControlPanel';
-import ThemeScript from '../components/ThemeScript.astro';
 import SiteHead from '../components/SiteHead.astro';
+import ThemeScript from '../components/ThemeScript.astro';
+import { THEME_DEFAULTS } from '../lib/theme';
+import { defaultThemeClass as resolveThemeClass, themeClasses } from '../lib/themeRegistry';
 
 interface Props {
   title: string;
@@ -25,17 +22,9 @@ const defaultTheme = THEME_DEFAULTS.theme;
 // script redirects dashboard-default humans from `/` to /app.
 const defaultLayout = 'control-plane';
 
-// All three theme classes are emitted into the stylesheet so the client-side
-// applyTheme() can switch between them by toggling class on <html>.
 // The theme registry maps theme name → vanilla-extract theme class.
 // (VE createTheme classes = THEME axis only — D17)
-const themeClasses: Record<string, string> = {
-  'control-plane': controlPlaneTheme,
-  'editorial': editorialTheme,
-  'kinetic': kineticTheme,
-  'calm-console': calmConsoleTheme,
-};
-const defaultThemeClass = themeClasses[defaultTheme] ?? controlPlaneTheme;
+const defaultThemeClass = resolveThemeClass(defaultTheme);
 ---
 
 <html

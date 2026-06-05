@@ -3,7 +3,7 @@
  * NOTE: the final skills list (D1) is not yet locked with Mike — this migrates
  * the existing working set; revisit when the reorg is confirmed.
  */
-import type { Skill, ExtraTag } from './types';
+import type { ExtraTag, Skill } from './types';
 
 export const skills: Skill[] = [
   { name: 'AI / agents', level: 'primary', pct: '95%' },

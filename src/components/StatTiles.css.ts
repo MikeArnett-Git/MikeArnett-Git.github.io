@@ -4,7 +4,7 @@
  * [data-layout] selectors adapt structural arrangement (axis D17).
  */
 
-import { style, globalStyle } from '@vanilla-extract/css';
+import { globalStyle, style } from '@vanilla-extract/css';
 import { contract } from '../styles/contract.css';
 import { tile, tileKey } from './primitives/MetricTile.css';
 

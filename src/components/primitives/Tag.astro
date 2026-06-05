@@ -5,7 +5,7 @@
  * variant='chip-live'  → green pill with dot (shipped / live)
  * variant='chip-active'→ cyan pill with dot (in dev)
  */
-import { tagDefault, chipLive, chipActive, chipDot } from './Tag.css';
+import { chipActive, chipDot, chipLive, tagDefault } from './Tag.css';
 
 interface Props {
   variant: 'tag' | 'chip-live' | 'chip-active';
@@ -14,10 +14,7 @@ interface Props {
 
 const { variant, dot = false } = Astro.props;
 
-const cls =
-  variant === 'tag' ? tagDefault :
-  variant === 'chip-live' ? chipLive :
-  chipActive;
+const cls = variant === 'tag' ? tagDefault : variant === 'chip-live' ? chipLive : chipActive;
 ---
 
 <span class={cls}>

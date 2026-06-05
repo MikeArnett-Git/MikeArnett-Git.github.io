@@ -24,14 +24,21 @@ import { persistentMap } from '@nanostores/persistent';
  * Styling axis: colours, fonts, type scale, radius, accent, background
  * treatment (grid dots vs paper vs blobs), border style, shadows.
  */
-export type Theme = 'control-plane' | 'editorial' | 'kinetic' | 'calm-console';
+export const THEME_IDS = ['control-plane', 'editorial', 'kinetic', 'calm-console'] as const;
+export type Theme = (typeof THEME_IDS)[number];
 
 /**
  * Structure axis: DOM arrangement/composition — hero layout (centred vs
  * off-centre), grid columns, section-heading structure, which blocks/elements
  * appear and where, nav style, page-scroll vs app-shell shell.
+ *
+ * THEME_IDS / LAYOUT_IDS are the single source of truth for the two axes — the
+ * union types derive from them, and stats (e.g. the design matrix) count them,
+ * so adding an axis value updates the type, the presets it must fill, and the
+ * site's published numbers together.
  */
-export type Layout = 'control-plane' | 'editorial' | 'kinetic' | 'dashboard';
+export const LAYOUT_IDS = ['control-plane', 'editorial', 'kinetic', 'dashboard'] as const;
+export type Layout = (typeof LAYOUT_IDS)[number];
 
 export type Mode = 'dark' | 'light';
 export type Density = 'comfortable' | 'compact';
@@ -63,7 +70,7 @@ export interface PersistentThemeState extends Record<string, string | undefined>
   mode: string;
   accentHue: string;
   fontSet: string;
-  motion: string;   // 'true' | 'false'
+  motion: string; // 'true' | 'false'
   density: string;
 }
 
@@ -94,15 +101,15 @@ const PERSISTENT_DEFAULTS: PersistentThemeState = {
 
 // ─── Store ────────────────────────────────────────────────────────────────────
 
+/** localStorage key prefix shared by the persistent store + any inline scripts. */
+export const STORAGE_PREFIX = 'mikearnett.theme:';
+
 /**
  * Persistent nanostores map keyed 'mikearnett.theme:'.
  * Each field is serialised as an individual localStorage key under that prefix.
  * SSR-safe: reads/writes only on the client; server always sees defaults.
  */
-export const themeStore = persistentMap<PersistentThemeState>(
-  'mikearnett.theme:',
-  PERSISTENT_DEFAULTS,
-);
+export const themeStore = persistentMap<PersistentThemeState>(STORAGE_PREFIX, PERSISTENT_DEFAULTS);
 
 // ─── Parser ───────────────────────────────────────────────────────────────────
 
@@ -156,7 +163,9 @@ export function applyTheme(state: ThemeState): void {
   // Switch VE theme class if registry is populated
   const allKnown = Object.values(_themeClasses);
   if (allKnown.length > 0) {
-    allKnown.forEach(cls => root.classList.remove(cls));
+    allKnown.forEach((cls) => {
+      root.classList.remove(cls);
+    });
     const targetClass = _themeClasses[state.theme];
     if (targetClass) root.classList.add(targetClass);
   }
@@ -186,7 +195,7 @@ export function applyTheme(state: ThemeState): void {
  */
 export const DESIGN_DEFAULTS: Record<Theme, { accentHue: number }> = {
   'control-plane': { accentHue: 205 },
-  'editorial':     { accentHue: 35  },
-  'kinetic':       { accentHue: 285 },
-  'calm-console':  { accentHue: 265 },
+  editorial: { accentHue: 35 },
+  kinetic: { accentHue: 285 },
+  'calm-console': { accentHue: 265 },
 };

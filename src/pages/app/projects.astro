@@ -1,13 +1,13 @@
 ---
+import ProjectGrid from '../../components/ProjectGrid.astro';
+import { projectsThesis } from '../../data/projects';
 /**
  * /app/projects — Projects view.
  * Heading + thesis intro, then ProjectGrid (renders all projects).
  * D14: ProjectGrid is the canonical renderer; no per-view fork.
  */
 import AppShellLayout from '../../layouts/AppShellLayout.astro';
-import ProjectGrid from '../../components/ProjectGrid.astro';
-import { viewStack, viewH1, viewIntro } from '../../styles/appView.css';
-import { projectsThesis } from '../../data/projects';
+import { viewH1, viewIntro, viewStack } from '../../styles/appView.css';
 ---
 
 <AppShellLayout

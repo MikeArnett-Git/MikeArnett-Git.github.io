@@ -1,4 +1,6 @@
 ---
+import Tag from '../../components/primitives/Tag.astro';
+import { beyondTheEditor, practicesIntro, practiceTags } from '../../data/practices';
 /**
  * /app/practices — Practices view.
  * Renders practicesIntro, practiceTags as Tag chips, and beyondTheEditor list.
@@ -6,13 +8,18 @@
  * D14: reuses widgetCard/widgetHead/widgetH2/summaryText from Overview.css.
  */
 import AppShellLayout from '../../layouts/AppShellLayout.astro';
-import Tag from '../../components/primitives/Tag.astro';
-import { viewStack, viewH1 } from '../../styles/appView.css';
+import { viewH1, viewStack } from '../../styles/appView.css';
 import {
-  widgetCard, widgetHead, widgetH2, widgetHint,
-  summaryText, focusItem, focusBullet, focusText, focusFt,
-} from '../../components/widgets/Overview.css';
-import { practicesIntro, practiceTags, beyondTheEditor } from '../../data/practices';
+  focusBullet,
+  focusFt,
+  focusItem,
+  focusText,
+  summaryText,
+  widgetCard,
+  widgetH2,
+  widgetHead,
+  widgetHint,
+} from '../../styles/views/shared.css';
 ---
 
 <AppShellLayout

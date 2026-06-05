@@ -1,13 +1,13 @@
 ---
+import ExperienceEntry from '../../components/ExperienceEntry.astro';
+import { experience } from '../../data/experience';
 /**
  * /app/experience — Experience view.
  * Renders every role via ExperienceEntry (full card: rail + body + metrics).
  * D14: maximal reuse — no per-view style forks.
  */
 import AppShellLayout from '../../layouts/AppShellLayout.astro';
-import ExperienceEntry from '../../components/ExperienceEntry.astro';
-import { viewStack, viewH1, viewIntro } from '../../styles/appView.css';
-import { experience } from '../../data/experience';
+import { viewH1, viewIntro, viewStack } from '../../styles/appView.css';
 ---
 
 <AppShellLayout

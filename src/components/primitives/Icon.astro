@@ -1,11 +1,11 @@
 ---
+import type { IconName } from './icons';
 /**
  * Icon primitive — renders a named icon from the icon registry (icons.ts).
  * Wraps inner SVG path markup in a consistent <svg viewBox="0 0 24 24">.
  * Usage: <Icon name="arrowRight" size={16} />
  */
 import { icons } from './icons';
-import type { IconName } from './icons';
 
 interface Props {
   /** Icon name from the registry */
@@ -22,14 +22,7 @@ interface Props {
   label?: string;
 }
 
-const {
-  name,
-  size = 24,
-  stroke = 2,
-  class: className,
-  style: extraStyle,
-  label,
-} = Astro.props;
+const { name, size = 24, stroke = 2, class: className, style: extraStyle, label } = Astro.props;
 
 const sizeStr = typeof size === 'number' ? `${size}px` : size;
 const styleAttr = [`width:${sizeStr}`, `height:${sizeStr}`, extraStyle].filter(Boolean).join(';');

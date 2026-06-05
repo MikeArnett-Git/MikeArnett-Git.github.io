@@ -1,4 +1,7 @@
 ---
+import CaseStudyArticle from '../../../components/CaseStudyArticle.astro';
+import type { CaseStudy } from '../../../data';
+import { caseStudies } from '../../../data';
 /**
  * /app/projects/[slug] — Dashboard case-study view.
  * One route per case study, generated from the caseStudies data array.
@@ -7,12 +10,9 @@
  * D20: title/description drawn from data only.
  */
 import AppShellLayout from '../../../layouts/AppShellLayout.astro';
-import CaseStudyArticle from '../../../components/CaseStudyArticle.astro';
-import { caseStudies } from '../../../data/caseStudies';
-import type { CaseStudy } from '../../../data/types';
 
 export function getStaticPaths() {
-  return caseStudies.map(cs => ({
+  return caseStudies.map((cs) => ({
     params: { slug: cs.slug },
     props: { caseStudy: cs },
   }));

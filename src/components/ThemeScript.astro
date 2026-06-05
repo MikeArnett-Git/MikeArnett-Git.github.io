@@ -64,7 +64,7 @@ const { themeClasses } = Astro.props;
 
       var allClasses = Object.values(themeClasses);
       allClasses.forEach(function (cls) { root.classList.remove(cls); });
-      var targetClass = themeClasses[theme] || themeClasses['control-plane'];
+      var targetClass = themeClasses[theme] || themeClasses[defaults.theme];
       if (targetClass) root.classList.add(targetClass);
 
       root.setAttribute('data-theme',  theme);

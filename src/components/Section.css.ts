@@ -7,13 +7,14 @@
  * [data-layout] selectors adapt section spacing + divider structure (layout axis).
  */
 
-import { style, globalStyle } from '@vanilla-extract/css';
+import { globalStyle, style } from '@vanilla-extract/css';
 import { contract } from '../styles/contract.css';
+
 // Re-export the shared wrap so src/pages/index.astro can import it from here (backward-compat).
 export { wrap } from '../styles/layout.css';
 
 // Re-export from primitive so existing index.astro imports keep working.
-export { sectionHead, sectionIdx, sectionH2, sectionMeta } from './primitives/SectionHeading.css';
+export { sectionH2, sectionHead, sectionIdx, sectionMeta } from './primitives/SectionHeading.css';
 
 export const section = style({
   paddingBlock: 'clamp(3.5rem, 8vw, 6rem)',

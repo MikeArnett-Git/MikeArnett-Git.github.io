@@ -4,7 +4,7 @@
  * Chip is from primitives/Tag.css.ts (chip-live).
  */
 
-import { style, globalStyle } from '@vanilla-extract/css';
+import { globalStyle, style } from '@vanilla-extract/css';
 import { contract } from '../styles/contract.css';
 
 export const expRail = style({

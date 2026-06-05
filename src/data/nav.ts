@@ -5,7 +5,7 @@
  *               palette is derived from it (+ a "switch to page view" item).
  * Add or rename a destination once, here, and it updates everywhere.
  */
-import type { NavLink, AppNavItem, PaletteItem } from './types';
+import type { AppNavItem, NavLink, PaletteItem } from './types';
 
 export const pageNav: NavLink[] = [
   { id: 'work', label: 'Work', href: '#work' },
