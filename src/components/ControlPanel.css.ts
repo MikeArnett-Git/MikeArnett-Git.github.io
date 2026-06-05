@@ -6,13 +6,13 @@
  * VE rule: @media queries must be top-level keys (not inside selectors).
  */
 
-import { style, keyframes } from '@vanilla-extract/css';
+import { keyframes, style } from '@vanilla-extract/css';
 import { contract } from '../styles/contract.css';
 
 // Panel open animation
 const slideUp = keyframes({
   from: { opacity: 0, transform: 'translateY(12px)' },
-  to:   { opacity: 1, transform: 'translateY(0)' },
+  to: { opacity: 1, transform: 'translateY(0)' },
 });
 
 // ── Toggle button ────────────────────────────────────────────────────────────
@@ -33,6 +33,7 @@ export const toggleBtn = style({
   alignItems: 'center',
   justifyContent: 'center',
   fontSize: '1.2rem',
+  // Theme-agnostic neutral-black elevation for the floating overlay (intentional literal, not a theme token).
   boxShadow: '0 4px 24px oklch(0% 0 0 / 0.28)',
   transition: `background ${contract.motion.durFast} ${contract.motion.easing},
                border-color ${contract.motion.durFast} ${contract.motion.easing},
@@ -69,6 +70,7 @@ export const panel = style({
   background: contract.color.surface,
   border: `1.5px solid ${contract.color.line}`,
   borderRadius: contract.radius.lg,
+  // Theme-agnostic neutral-black elevation for the floating panel (intentional literal, not a theme token).
   boxShadow: '0 8px 40px oklch(0% 0 0 / 0.36)',
   padding: `${contract.space['6']} ${contract.space['6']} ${contract.space['4']}`,
   display: 'flex',
@@ -160,6 +162,7 @@ export const divider = style({
   height: '1px',
   background: contract.color.hairline,
   margin: `${contract.space['1']} 0`,
+  border: 'none', // rendered as <hr>; reset the default rule border
 });
 
 // ── Preset buttons (headline control) ────────────────────────────────────────
@@ -168,6 +171,11 @@ export const presetRow = style({
   display: 'grid',
   gridTemplateColumns: 'repeat(3, 1fr)',
   gap: contract.space['2'],
+  // rendered as <fieldset> (groups the preset buttons) — reset its native chrome
+  border: 'none',
+  margin: 0,
+  padding: 0,
+  minInlineSize: 0,
 });
 
 export const presetBtn = style({
@@ -241,7 +249,10 @@ export const accentSlider = style({
   appearance: 'none',
   WebkitAppearance: 'none',
   borderRadius: '2px',
-  background: 'linear-gradient(to right, oklch(65% 0.18 0), oklch(65% 0.18 60), oklch(65% 0.18 120), oklch(65% 0.18 180), oklch(65% 0.18 240), oklch(65% 0.18 300), oklch(65% 0.18 360))',
+  // Functional full-spectrum hue wheel for the accent-hue picker — every hue 0–360
+  // by design, so these are literal (not theme tokens).
+  background:
+    'linear-gradient(to right, oklch(65% 0.18 0), oklch(65% 0.18 60), oklch(65% 0.18 120), oklch(65% 0.18 180), oklch(65% 0.18 240), oklch(65% 0.18 300), oklch(65% 0.18 360))',
   cursor: 'pointer',
   outline: 'none',
   selectors: {
@@ -329,6 +340,11 @@ export const toggleLabel = style({
 export const toggleGroup = style({
   display: 'flex',
   gap: contract.space['1'],
+  // rendered as <fieldset> (groups the toggle buttons) — reset its native chrome
+  border: 'none',
+  margin: 0,
+  padding: 0,
+  minInlineSize: 0,
 });
 
 export const toggleOptionBtn = style({
