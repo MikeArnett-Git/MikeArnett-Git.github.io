@@ -69,11 +69,14 @@ export interface PersistentThemeState extends Record<string, string | undefined>
 
 // ─── Defaults ─────────────────────────────────────────────────────────────────
 
+// Default design = D3 (calm-console theme + dashboard layout). The bare homepage
+// sends dashboard-default visitors to /app (see ThemeScript). Supersedes D11's
+// control-plane default. (D23)
 export const THEME_DEFAULTS: ThemeState = {
-  theme: 'control-plane',
-  layout: 'control-plane',
+  theme: 'calm-console',
+  layout: 'dashboard',
   mode: 'dark',
-  accentHue: 205,
+  accentHue: 265,
   fontSet: 'default',
   motion: true,
   density: 'comfortable',

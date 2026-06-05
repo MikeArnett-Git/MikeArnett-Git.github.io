@@ -20,7 +20,10 @@ const { title, description } = Astro.props;
 // SSR: apply the default theme class + data-theme / data-layout synchronously.
 // Client: the inline pre-paint script below reads localStorage to avoid FOUC.
 const defaultTheme = THEME_DEFAULTS.theme;
-const defaultLayout = THEME_DEFAULTS.layout;
+// BaseLayout is the page-scroll route; SSR a page layout for crawlers + as the
+// page-view base (the dashboard default lives at /app — D19/D23). The pre-paint
+// script redirects dashboard-default humans from `/` to /app.
+const defaultLayout = 'control-plane';
 
 // All three theme classes are emitted into the stylesheet so the client-side
 // applyTheme() can switch between them by toggling class on <html>.

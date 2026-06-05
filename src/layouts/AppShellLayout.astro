@@ -335,6 +335,12 @@ const brandInitials = profile.name.split(' ').map(w => w[0]).join('');
           btn.addEventListener('click', function () {
             var href = btn.dataset.href;
             if (href) {
+              // "Switch to page view" → leave the dashboard default behind by
+              // persisting a page layout, so `/` shows the page-scroll site
+              // instead of redirecting straight back to /app (D23).
+              if (href === '/') {
+                try { localStorage.setItem('mikearnett.theme:layout', 'control-plane'); } catch (e) {}
+              }
               closePalette();
               window.location.href = href;
             }

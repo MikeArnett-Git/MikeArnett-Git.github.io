@@ -26,10 +26,10 @@ const { themeClasses } = Astro.props;
   (function () {
     var ns = 'mikearnett.theme:';
     var defaults = {
-      theme: 'control-plane',
-      layout: 'control-plane',
+      theme: 'calm-console',
+      layout: 'dashboard',
       mode: 'dark',
-      accentHue: '205',
+      accentHue: '265',
       fontSet: 'default',
       motion: 'true',
       density: 'comfortable',
@@ -53,7 +53,13 @@ const { themeClasses } = Astro.props;
         if (read('layout') !== 'dashboard') write('layout', 'dashboard');
       } else {
         layout = read('layout');
-        if (layout === 'dashboard') { layout = 'control-plane'; write('layout', layout); }
+        if (layout === 'dashboard') {
+          // Dashboard is the default landing — send the bare homepage to /app
+          // (pre-paint, so `/` never flashes). Page deep-links fall back to a
+          // page layout for rendering without overwriting the dashboard default.
+          if (path === '/') { location.replace('/app'); return; }
+          layout = 'control-plane';
+        }
       }
 
       var allClasses = Object.values(themeClasses);
