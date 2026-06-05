@@ -6,7 +6,7 @@
  * is aliased to `react-dom/client` in astro.config.mjs so the island runs on the
  * Preact runtime (~4 KB) while keeping the React renderer/API. See D4 (revised).
  */
-import { render, hydrate, type ComponentChild } from 'preact';
+import { type ComponentChild, hydrate, render } from 'preact';
 
 type Container = Element | Document | ShadowRoot | DocumentFragment;
 
@@ -30,6 +30,13 @@ export function createRoot(container: Container): Root {
   return makeRoot(container);
 }
 
+/**
+ * NOTE: the returned root's `render()` does a fresh `render()`, not incremental
+ * hydration — fine for our usage (islands hydrate once; ControlPanel is
+ * `client:only`, so it goes through `createRoot` and never calls this). If an
+ * island is ever switched to a `client:load`/`client:visible` directive AND
+ * relies on post-hydration `root.render()` re-renders, revisit this.
+ */
 export function hydrateRoot(container: Container, children: ComponentChild): Root {
   hydrate(children, container as Element);
   return makeRoot(container);

@@ -1,8 +1,8 @@
 import { fileURLToPath } from 'node:url';
-import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin';
+import { defineConfig } from 'astro/config';
 
 const reactDomClientShim = fileURLToPath(
   new URL('./src/lib/preact-compat-client.ts', import.meta.url),
