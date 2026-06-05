@@ -4,7 +4,7 @@
  * [data-theme] selectors adapt card chrome per design.
  */
 
-import { style, globalStyle } from '@vanilla-extract/css';
+import { globalStyle, style } from '@vanilla-extract/css';
 import { contract } from '../../styles/contract.css';
 
 /** Standard card: surface bg, border, rounded, hover lift + corner tick. */
@@ -20,8 +20,8 @@ export const card = style({
   overflow: 'hidden',
   transition: `border-color ${contract.motion.durBase} ${contract.motion.easing}, transform ${contract.motion.durBase} ${contract.motion.easing}, background ${contract.motion.durBase} ${contract.motion.easing}`,
   ':hover': {
-    borderColor: 'oklch(48% 0.04 220)',
-    background: 'oklch(23% 0.026 258)',
+    borderColor: contract.color.borderHover,
+    background: contract.color.surfaceHover,
   },
   '@media': {
     '(prefers-reduced-motion: no-preference)': {
@@ -57,8 +57,8 @@ export const card = style({
 
 /** Featured card variant — slightly lighter gradient bg, accent border. */
 export const cardFeatured = style({
-  background: 'linear-gradient(160deg, oklch(20% 0.024 260), oklch(18% 0.03 255))',
-  borderColor: 'oklch(48% 0.04 220)',
+  background: contract.color.featuredBg,
+  borderColor: contract.color.borderHover,
 });
 
 /** Article card — used by ExperienceEntry. No lift transform; split-column layout. */

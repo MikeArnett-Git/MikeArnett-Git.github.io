@@ -4,10 +4,11 @@
  * [data-theme] selectors at the bottom adapt typography + chrome per design.
  */
 
-import { style, keyframes, globalStyle } from '@vanilla-extract/css';
+import { globalStyle, keyframes, style } from '@vanilla-extract/css';
 import { contract } from '../styles/contract.css';
 // Import shared wrap for use in globalStyle selectors; re-export for backward-compat with index.astro.
 import { wrap } from '../styles/layout.css';
+
 export { wrap };
 
 const rise = keyframes({
@@ -20,8 +21,8 @@ const blink = keyframes({
 });
 
 const pulse = keyframes({
-  '0%':   { boxShadow: `0 0 0 0   ${contract.color.live}` },
-  '70%':  { boxShadow: '0 0 0 7px transparent' },
+  '0%': { boxShadow: `0 0 0 0   ${contract.color.live}` },
+  '70%': { boxShadow: '0 0 0 7px transparent' },
   '100%': { boxShadow: '0 0 0 0   transparent' },
 });
 
@@ -169,7 +170,7 @@ globalStyle(`[data-theme="kinetic"] .${heroStatus}`, {
 });
 
 globalStyle(`[data-theme="kinetic"] .${summary}`, {
-  borderLeft: `2px solid oklch(70% 0.19 285 / 0.34)`,
+  borderLeft: `2px solid ${contract.color.accentSubtleBorder}`,
   paddingLeft: 'clamp(1.1rem, 2.2vw, 1.8rem)',
 });
 
@@ -188,9 +189,20 @@ globalStyle(`[data-layout="editorial"] .${hero}`, {
   },
 });
 
-// In editorial layout the wrap (lede column) needs no extra wrappermax so it
-// flows as a grid cell; override the default max-width / margin constraints.
+// In editorial layout EVERY .wrap (StatTiles + Work/Projects/Practices sections)
+// shares the hero's wider 1320px shell + matching gutter, so all content aligns
+// to one editorial measure — mirrors the mockup's single `.shell` container.
+// (Previously this rule killed the container on every wrap, so the sections ran
+//  full-bleed and got cut off at the viewport edges while the hero stayed inset.)
 globalStyle(`[data-layout="editorial"] .${wrap}`, {
+  maxWidth: '1320px',
+  paddingInline: 'clamp(1.25rem, 5vw, 6rem)',
+});
+
+// EXCEPTION: the hero's own lede wrap is a grid cell INSIDE the 1320px hero
+// shell, so it must flow flush — no max-width / margin / padding of its own
+// (the hero shell already supplies the gutter). Higher specificity wins.
+globalStyle(`[data-layout="editorial"] .${hero} > .${wrap}`, {
   maxWidth: 'none',
   marginInline: '0',
   paddingInline: '0',

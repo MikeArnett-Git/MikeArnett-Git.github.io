@@ -15,6 +15,10 @@ export const kineticTheme = createTheme(contract, {
     surface: 'oklch(17.5% 0.004 285)',
     surfaceRaised: 'oklch(21% 0.006 285)',
     surfaceInset: 'oklch(13% 0.003 285)',
+    // Card hover bg: equals surfaceRaised on kinetic (one step up from surface).
+    surfaceHover: 'oklch(21% 0.006 285)',
+    // Near-transparent white overlay on dark bg — hover tint on nav links / ghost buttons.
+    surfaceSubtle: 'oklch(100% 0 0 / 0.04)',
     ink: 'oklch(95% 0 0)',
     inkDim: 'oklch(78% 0.004 285)',
     inkFaint: 'oklch(46% 0.006 285)',
@@ -23,6 +27,27 @@ export const kineticTheme = createTheme(contract, {
     accent: 'oklch(70% 0.19 var(--accent-hue, 285))',
     accentBright: 'oklch(78% 0.17 var(--accent-hue, 285))',
     accentDeep: 'oklch(55% 0.14 var(--accent-hue, 285))',
+    // Low-opacity accent fill — chip/button hover backgrounds.
+    accentSubtle: 'oklch(70% 0.19 285 / 0.12)',
+    // Low-opacity accent border — chipActive border.
+    accentSubtleBorder: 'oklch(70% 0.19 285 / 0.35)',
+    // Accent glow ring — kinetic brandGlyph halo.
+    accentHalo: 'oklch(70% 0.19 285 / 0.16)',
+    // Accent-hued bar fill — scopeviz bars.
+    scopeFill: 'oklch(70% 0.19 285 / 0.22)',
+    // Text on accent: near-black on violet.
+    onAccent: 'oklch(14% 0 0)',
+    // Frosted nav backdrop: near-opaque near-black.
+    navBg: 'oklch(14% 0 0 / 0.72)',
+    // Active dashboard nav-item highlight — accent at low alpha, tracks live --accent-hue.
+    navActiveBg: 'oklch(70% 0.19 var(--accent-hue, 285) / 0.14)',
+    // Hover border: use kinetic's line value (dark violet-grey).
+    borderHover: 'oklch(28% 0.005 285)',
+    // Featured card: transparent (kinetic is minimal, no gradient cards).
+    featuredBg: 'transparent',
+    // Semantic chip colours: live/shipped (kinetic maps to accent, no live-green concept).
+    tagLiveBg: 'oklch(70% 0.19 285 / 0.12)',
+    tagLiveBorder: 'oklch(70% 0.19 285 / 0.35)',
     live: 'oklch(70% 0.19 var(--accent-hue, 285))',
     // overlay: modal scrims / palette backdrop (kinetic: near-black, neutral)
     overlay: 'oklch(8% 0 0 / 0.60)',

@@ -17,6 +17,8 @@ export const actCell = style({
   background: contract.color.surfaceInset,
 });
 
+// Intentional data-viz scale (not a theme token): a 4-step sequential heat ramp
+// of the accent, opacity-graded. Stays hue-reactive via the live --accent-hue var.
 export const actCellL1 = style({
   background: 'oklch(70% 0.15 var(--accent-hue, 265) / 0.22)',
 });

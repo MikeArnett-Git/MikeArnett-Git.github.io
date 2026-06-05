@@ -4,7 +4,7 @@
  * Responsive: sidebar → icon-rail (tablet 769–1080) → drawer (≤768).
  */
 
-import { style, globalStyle, keyframes } from '@vanilla-extract/css';
+import { globalStyle, keyframes, style } from '@vanilla-extract/css';
 import { contract } from '../styles/contract.css';
 
 // ── Shell layout ────────────────────────────────────────────────────────────
@@ -177,9 +177,9 @@ export const shellDot = style({
   '@media': {
     '(prefers-reduced-motion: no-preference)': {
       animationName: keyframes({
-        '0%':   { boxShadow: `0 0 0 0   ${contract.color.live}` },
-        '70%':  { boxShadow: '0 0 0 7px transparent'             },
-        '100%': { boxShadow: '0 0 0 0   transparent'             },
+        '0%': { boxShadow: `0 0 0 0   ${contract.color.live}` },
+        '70%': { boxShadow: '0 0 0 7px transparent' },
+        '100%': { boxShadow: '0 0 0 0   transparent' },
       }),
       animationDuration: '2.6s',
       animationTimingFunction: 'ease-out',
@@ -371,7 +371,7 @@ export const shellScrim = style({
 
 const palettePopIn = keyframes({
   from: { opacity: 0, transform: 'translateY(-8px) scale(.98)' },
-  to:   { opacity: 1, transform: 'none' },
+  to: { opacity: 1, transform: 'none' },
 });
 
 export const shellPaletteOverlay = style({
@@ -494,7 +494,7 @@ export const skipLink = style({
   top: '8px',
   zIndex: 200,
   background: contract.color.accent,
-  color: 'oklch(16% 0.02 260)',
+  color: contract.color.onAccent,
   fontFamily: contract.font.mono,
   fontSize: '0.8rem',
   fontWeight: '600',
@@ -671,4 +671,44 @@ globalStyle(`${shellContent}`, {
       padding: '18px 16px',
     },
   },
+});
+
+// ── JS-applied state classes (must survive VE hashing) ───────────────────────
+// These were formerly in AppShellLayout.astro as `is:global` — extracted so
+// the .astro file owns only markup.
+
+// Drawer open (mobile)
+globalStyle('.shell-sidebar--drawer-open', {
+  transform: 'translateX(0) !important',
+});
+globalStyle('.shell-scrim--open', {
+  display: 'block !important',
+});
+globalStyle('.shell-palette--open', {
+  display: 'flex !important',
+});
+
+// Reduced-motion override for drawer transition
+globalStyle('.shell-sidebar--drawer-open', {
+  '@media': {
+    '(prefers-reduced-motion: reduce)': {
+      transition: 'none !important',
+    },
+  },
+});
+
+// Nav icon SVG sizing — applied inside VE-hashed class element
+globalStyle('[class*="shellNavItemIcon"] svg', {
+  width: '19px',
+  height: '19px',
+  display: 'block',
+});
+
+// Active nav item accent (accent-hue parameterised)
+globalStyle('[class*="shellNavItem"][aria-current="page"]', {
+  background: `${contract.color.navActiveBg} !important`,
+});
+globalStyle('[class*="shellNavItem"][aria-current="page"] [class*="shellNavItemIcon"] svg', {
+  color: contract.color.accentBright,
+  opacity: 1,
 });

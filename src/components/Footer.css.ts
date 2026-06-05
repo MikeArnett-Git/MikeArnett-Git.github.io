@@ -1,4 +1,4 @@
-import { style } from '@vanilla-extract/css';
+import { globalStyle, style } from '@vanilla-extract/css';
 import { contract } from '../styles/contract.css';
 
 export const footer = style({
@@ -13,6 +13,13 @@ export const footWrap = style({
   maxWidth: '1180px',
   marginInline: 'auto',
   paddingInline: 'clamp(1.25rem, 4vw, 4rem)',
+});
+
+// Editorial LAYOUT: footer shares the wider 1320px editorial shell + gutter so
+// it aligns to the same measure as the nav, hero, and sections.
+globalStyle(`[data-layout="editorial"] .${footWrap}`, {
+  maxWidth: '1320px',
+  paddingInline: 'clamp(1.25rem, 5vw, 6rem)',
 });
 
 export const footGrid = style({
@@ -59,7 +66,7 @@ export const contactLink = style({
   fontFamily: contract.font.mono,
   fontSize: '0.9rem',
   color: contract.color.accentBright,
-  borderBottom: '1px solid oklch(48% 0.04 220)',
+  borderBottom: `1px solid ${contract.color.borderHover}`,
   paddingBottom: '2px',
   ':hover': {
     color: contract.color.accent,
@@ -104,5 +111,5 @@ export const footBase = style({
 });
 
 export const liveTag = style({
-  color: 'oklch(60% 0.14 138)',
+  color: contract.color.live,
 });

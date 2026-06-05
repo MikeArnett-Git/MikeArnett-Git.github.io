@@ -21,15 +21,18 @@ export const tagBase = style({
 });
 
 /** Default tag — hash prefix, surface/hairline colours. Used in Practices. */
-export const tagDefault = style([tagBase, {
-  color: contract.color.inkDim,
-  background: contract.color.surfaceInset,
-  border: `1px solid ${contract.color.hairline}`,
-  '::before': {
-    content: '"# "',
-    color: contract.color.accentDeep,
+export const tagDefault = style([
+  tagBase,
+  {
+    color: contract.color.inkDim,
+    background: contract.color.surfaceInset,
+    border: `1px solid ${contract.color.hairline}`,
+    '::before': {
+      content: '"# "',
+      color: contract.color.accentDeep,
+    },
   },
-}]);
+]);
 
 /** Chip shape (no hash prefix, pill radius). Base for status chips. */
 export const chipBase = style({
@@ -45,18 +48,24 @@ export const chipBase = style({
 });
 
 /** "live / shipped" — green variant. */
-export const chipLive = style([chipBase, {
-  color: contract.color.live,
-  background: 'oklch(60% 0.14 138 / 0.12)',
-  border: '1px solid oklch(60% 0.14 138 / 0.35)',
-}]);
+export const chipLive = style([
+  chipBase,
+  {
+    color: contract.color.live,
+    background: contract.color.tagLiveBg,
+    border: `1px solid ${contract.color.tagLiveBorder}`,
+  },
+]);
 
 /** "in dev / active" — cyan/accent variant. */
-export const chipActive = style([chipBase, {
-  color: contract.color.accentBright,
-  background: 'oklch(72% 0.16 205 / 0.12)',
-  border: '1px solid oklch(72% 0.16 205 / 0.35)',
-}]);
+export const chipActive = style([
+  chipBase,
+  {
+    color: contract.color.accentBright,
+    background: contract.color.accentSubtle,
+    border: `1px solid ${contract.color.accentSubtleBorder}`,
+  },
+]);
 
 /** Dot indicator inside a chip (inherits currentColor). */
 export const chipDot = style({

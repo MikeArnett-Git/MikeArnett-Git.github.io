@@ -8,6 +8,10 @@ export const calmConsoleTheme = createTheme(contract, {
     surface: 'oklch(22% 0.014 270)',
     surfaceRaised: 'oklch(25% 0.016 270)',
     surfaceInset: 'oklch(19.5% 0.013 270)',
+    // Card hover bg: one step above surfaceRaised.
+    surfaceHover: 'oklch(27% 0.018 270)',
+    // Near-transparent white overlay on dark indigo bg.
+    surfaceSubtle: 'oklch(100% 0 0 / 0.04)',
     ink: 'oklch(94% 0.01 270)',
     inkDim: 'oklch(78% 0.012 270)',
     inkFaint: 'oklch(50% 0.012 270)',
@@ -16,6 +20,27 @@ export const calmConsoleTheme = createTheme(contract, {
     accent: 'oklch(70% 0.15 var(--accent-hue, 265))',
     accentBright: 'oklch(76% 0.155 var(--accent-hue, 265))',
     accentDeep: 'oklch(58% 0.16 var(--accent-hue, 265))',
+    // Low-opacity accent fill — chip/button hover backgrounds.
+    accentSubtle: 'oklch(70% 0.15 265 / 0.12)',
+    // Low-opacity accent border — chipActive border.
+    accentSubtleBorder: 'oklch(70% 0.15 265 / 0.35)',
+    // Accent glow ring — kinetic brandGlyph halo.
+    accentHalo: 'oklch(70% 0.15 265 / 0.16)',
+    // Accent-hued bar fill — scopeviz bars.
+    scopeFill: 'oklch(70% 0.15 265 / 0.22)',
+    // Text on accent: deep indigo bg matches calm-console bg.
+    onAccent: 'oklch(18% 0.012 270)',
+    // Frosted nav backdrop: indigo with strong opacity.
+    navBg: 'oklch(18% 0.012 270 / 0.80)',
+    // Active dashboard nav-item highlight — accent at low alpha, tracks live --accent-hue.
+    navActiveBg: 'oklch(70% 0.15 var(--accent-hue, 265) / 0.14)',
+    // Hover border: use calm-console's line value.
+    borderHover: 'oklch(30% 0.014 270)',
+    // Featured card: gentle indigo gradient (one step per surface ramp).
+    featuredBg: 'linear-gradient(160deg, oklch(22% 0.014 270), oklch(20% 0.016 270))',
+    // Semantic chip colours: live/shipped (calm-console has its own live green at hue 160).
+    tagLiveBg: 'oklch(74% 0.13 160 / 0.12)',
+    tagLiveBorder: 'oklch(74% 0.13 160 / 0.35)',
     live: 'oklch(74% 0.13 160)',
     // overlay: modal scrims / palette backdrop (calm-console: deep indigo-tinted)
     overlay: 'oklch(11% 0.01 270 / 0.58)',

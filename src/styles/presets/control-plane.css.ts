@@ -8,6 +8,10 @@ export const controlPlaneTheme = createTheme(contract, {
     surface: 'oklch(20% 0.024 260)',
     surfaceRaised: 'oklch(20% 0.024 260)',
     surfaceInset: 'oklch(13% 0.018 262)',
+    // One step above surfaceRaised — used for card hover bg.
+    surfaceHover: 'oklch(23% 0.026 258)',
+    // Near-transparent white overlay — hover bg on nav links / ghost buttons.
+    surfaceSubtle: 'oklch(100% 0 0 / 0.04)',
     ink: 'oklch(92% 0.02 260)',
     inkDim: 'oklch(74% 0.022 258)',
     inkFaint: 'oklch(58% 0.022 258)',
@@ -16,6 +20,27 @@ export const controlPlaneTheme = createTheme(contract, {
     accent: 'oklch(72% 0.16 var(--accent-hue, 205))',
     accentBright: 'oklch(82% 0.15 var(--accent-hue, 205))',
     accentDeep: 'oklch(46% 0.10 var(--accent-hue, 205))',
+    // Low-opacity accent fill — chip/button hover backgrounds.
+    accentSubtle: 'oklch(72% 0.16 205 / 0.12)',
+    // Low-opacity accent border — chipActive border.
+    accentSubtleBorder: 'oklch(72% 0.16 205 / 0.35)',
+    // Accent glow ring — kinetic brandGlyph halo.
+    accentHalo: 'oklch(72% 0.16 205 / 0.16)',
+    // Accent-hued bar fill — scopeviz bars (22% alpha = visible but not distracting).
+    scopeFill: 'oklch(72% 0.16 205 / 0.22)',
+    // Text colour for content sitting directly on the accent colour (skip link, primary btn text).
+    onAccent: 'oklch(16% 0.02 260)',
+    // Frosted nav backdrop.
+    navBg: 'oklch(16% 0.02 260 / 0.78)',
+    // Active dashboard nav-item highlight — accent at low alpha, tracks live --accent-hue.
+    navActiveBg: 'oklch(72% 0.16 var(--accent-hue, 205) / 0.14)',
+    // Hover border — card hover, ghost/navCta button borders.
+    borderHover: 'oklch(48% 0.04 220)',
+    // Featured card gradient background.
+    featuredBg: 'linear-gradient(160deg, oklch(20% 0.024 260), oklch(18% 0.03 255))',
+    // Semantic chip colours: live/shipped.
+    tagLiveBg: 'oklch(60% 0.14 138 / 0.12)',
+    tagLiveBorder: 'oklch(60% 0.14 138 / 0.35)',
     live: 'oklch(82% 0.18 135)',
     // overlay: modal scrims / palette backdrop (control-plane: dark navy-tinted)
     overlay: 'oklch(12% 0.01 270 / 0.58)',

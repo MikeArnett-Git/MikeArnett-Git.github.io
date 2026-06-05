@@ -5,14 +5,14 @@
  * to each design without forking components.
  */
 
-import { style, globalStyle } from '@vanilla-extract/css';
+import { globalStyle, style } from '@vanilla-extract/css';
 import { contract } from '../styles/contract.css';
 
 export const topbar = style({
   position: 'sticky',
   top: 0,
   zIndex: 50,
-  background: 'oklch(16% 0.02 260 / 0.78)',
+  background: contract.color.navBg,
   backdropFilter: 'blur(12px) saturate(1.2)',
   WebkitBackdropFilter: 'blur(12px) saturate(1.2)',
   borderBottom: `1px solid ${contract.color.hairline}`,
@@ -33,6 +33,14 @@ export const cmdbar = style({
       height: '56px',
     },
   },
+});
+
+// Editorial LAYOUT: the nav shares the wider 1320px editorial shell + matching
+// gutter so the brand/links align to the same left edge as the hero + sections
+// (the editorial mockup frames everything in one shell — avoids a nav/content offset).
+globalStyle(`[data-layout="editorial"] .${cmdbar}`, {
+  maxWidth: '1320px',
+  paddingInline: 'clamp(1.25rem, 5vw, 6rem)',
 });
 
 export const brandmark = style({
@@ -112,7 +120,7 @@ export const navLink = style({
   },
   ':hover': {
     color: contract.color.ink,
-    background: 'oklch(100% 0 0 / 0.04)',
+    background: contract.color.surfaceSubtle,
   },
   selectors: {
     '&:focus-visible': {
@@ -126,7 +134,7 @@ export const navLink = style({
 // topbar gets the warm paper bg; nav links lose the "/" prefix (editorial uses
 // numerical indices instead — rendered by Nav.astro's markup).
 globalStyle(`[data-theme="editorial"] .${topbar}`, {
-  background: 'oklch(97% 0.012 85 / 0.86)',
+  background: contract.color.navBg,
   backdropFilter: 'saturate(140%) blur(8px)',
   WebkitBackdropFilter: 'saturate(140%) blur(8px)',
 });
@@ -137,7 +145,7 @@ globalStyle(`[data-theme="editorial"] .${navLink}::before`, {
 
 // ── Kinetic: nearly transparent header, minimal chrome, no "/" prefix ─────
 globalStyle(`[data-theme="kinetic"] .${topbar}`, {
-  background: 'oklch(14% 0 0 / 0.72)',
+  background: contract.color.navBg,
   backdropFilter: 'blur(8px)',
   WebkitBackdropFilter: 'blur(8px)',
 });
@@ -153,7 +161,7 @@ globalStyle(`[data-theme="kinetic"] .${brandGlyph}`, {
   borderRadius: '50%',
   background: contract.color.accent,
   border: 'none',
-  boxShadow: '0 0 0 4px oklch(70% 0.19 285 / 0.16)',
+  boxShadow: `0 0 0 4px ${contract.color.accentHalo}`,
 });
 
 globalStyle(`[data-theme="kinetic"] .${brandGlyph}::before`, {

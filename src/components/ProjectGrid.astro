@@ -1,11 +1,22 @@
 ---
-import Tag from './primitives/Tag.astro';
-import { card, cardFeatured } from './primitives/Card.css';
-import {
-  projGrid, cardTop, cardName, cardNameFeatured, cardH3, cardP, cardFlag, cardLink,
-  scopeviz, scopevizBar, spanClass,
-} from './ProjectGrid.css';
 import { projects } from '../data/projects';
+import {
+  cardBody,
+  cardFlag,
+  cardH3,
+  cardLink,
+  cardName,
+  cardNameFeatured,
+  cardP,
+  cardTop,
+  projGrid,
+  projNum,
+  scopeviz,
+  scopevizBar,
+  spanClass,
+} from './ProjectGrid.css';
+import { card, cardFeatured } from './primitives/Card.css';
+import Tag from './primitives/Tag.astro';
 
 interface Props {
   /** Base path for case-study deep-links. Defaults to '/projects'. */
@@ -21,20 +32,23 @@ const statusLabel = { 'in-dev': 'in dev', live: 'live' } as const;
 ---
 
 <div class={projGrid}>
-  {projects.map(p => (
+  {projects.map((p, i) => (
     <article class={`${p.featured ? `${card} ${cardFeatured}` : card} ${spanClass[p.span]} reveal`}>
-      <div class={cardTop}>
-        <span class={p.featured ? cardNameFeatured : cardName}>{p.name}</span>
-        {p.status === 'in-dev' && <Tag variant="chip-active" dot>{statusLabel[p.status]}</Tag>}
-        {p.status === 'live' && <Tag variant="chip-live" dot>{statusLabel[p.status]}</Tag>}
-      </div>
-      <h3 class={cardH3}>{p.headline}</h3>
-      <p class={cardP}>{p.description}</p>
-      {p.featured && (
-        <div class={scopeviz} aria-hidden="true">
-          {FEATURED_BARS.map(h => <span class={scopevizBar} style={`height:${h}`}></span>)}
+      <span class={projNum} aria-hidden="true">{String(i + 1).padStart(3, '0')}</span>
+      <div class={cardBody}>
+        <div class={cardTop}>
+          <span class={p.featured ? cardNameFeatured : cardName}>{p.name}</span>
+          {p.status === 'in-dev' && <Tag variant="chip-active" dot>{statusLabel[p.status]}</Tag>}
+          {p.status === 'live' && <Tag variant="chip-live" dot>{statusLabel[p.status]}</Tag>}
         </div>
-      )}
+        <h3 class={cardH3}>{p.headline}</h3>
+        <p class={cardP}>{p.description}</p>
+        {p.featured && (
+          <div class={scopeviz} aria-hidden="true">
+            {FEATURED_BARS.map(h => <span class={scopevizBar} style={`height:${h}`}></span>)}
+          </div>
+        )}
+      </div>
       <div class={cardFlag}>
         <span>{p.category}</span>
         <a href={`${caseStudyBase}/${p.id}`} class={cardLink}>{p.linkLabel}</a>

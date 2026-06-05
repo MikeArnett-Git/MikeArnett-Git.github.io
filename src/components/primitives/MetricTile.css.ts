@@ -16,7 +16,7 @@ export const tile = style({
   justifyContent: 'flex-end',
   transition: `background ${contract.motion.durBase} ${contract.motion.easing}`,
   ':hover': {
-    background: 'oklch(23% 0.026 258)',
+    background: contract.color.surfaceHover,
   },
   '@media': {
     '(max-width: 720px)': {

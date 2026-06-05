@@ -45,36 +45,42 @@ export const btnArrow = style({
   },
 });
 
-export const btnPrimary = style([btn, {
-  background: contract.color.accent,
-  color: 'oklch(16% 0.02 260)',
-  fontWeight: 600,
-  ':hover': {
-    background: contract.color.accentBright,
+export const btnPrimary = style([
+  btn,
+  {
+    background: contract.color.accent,
+    color: contract.color.onAccent,
+    fontWeight: 600,
+    ':hover': {
+      background: contract.color.accentBright,
+    },
   },
-}]);
+]);
 
-export const btnGhost = style([btn, {
-  background: 'transparent',
-  color: contract.color.ink,
-  borderColor: contract.color.line,
-  ':hover': {
-    borderColor: 'oklch(48% 0.04 220)',
-    background: 'oklch(100% 0 0 / 0.03)',
+export const btnGhost = style([
+  btn,
+  {
+    background: 'transparent',
+    color: contract.color.ink,
+    borderColor: contract.color.line,
+    ':hover': {
+      borderColor: contract.color.borderHover,
+      background: contract.color.surfaceSubtle,
+    },
   },
-}]);
+]);
 
 /** Smaller nav-bar CTA variant (matches navCta in Nav.css.ts). */
 export const btnNavCta = style({
   color: contract.color.accentBright,
   padding: '0.4rem 0.7rem',
   borderRadius: contract.radius.sm,
-  border: `1px solid oklch(48% 0.04 220)`,
+  border: `1px solid ${contract.color.borderHover}`,
   fontFamily: contract.font.mono,
   fontSize: '0.8rem',
   transition: `color ${contract.motion.durBase} ${contract.motion.easing}, background ${contract.motion.durBase} ${contract.motion.easing}, border-color ${contract.motion.durBase} ${contract.motion.easing}`,
   ':hover': {
-    background: 'oklch(72% 0.16 205 / 0.12)',
+    background: contract.color.accentSubtle,
     borderColor: contract.color.accent,
   },
   '@media': {

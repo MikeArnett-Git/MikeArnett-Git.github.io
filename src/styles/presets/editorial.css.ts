@@ -15,6 +15,10 @@ export const editorialTheme = createTheme(contract, {
     surface: 'oklch(95% 0.014 84)',
     surfaceRaised: 'oklch(93% 0.016 84)',
     surfaceInset: 'oklch(95% 0.014 84)',
+    // Card hover bg: one step brighter than surface on a light theme.
+    surfaceHover: 'oklch(97% 0.012 85)',
+    // Near-transparent dark overlay on light paper bg — subtle hover tint.
+    surfaceSubtle: 'oklch(0% 0 0 / 0.04)',
     ink: 'oklch(22% 0.02 70)',
     inkDim: 'oklch(40% 0.018 70)',
     inkFaint: 'oklch(56% 0.016 72)',
@@ -23,6 +27,27 @@ export const editorialTheme = createTheme(contract, {
     accent: 'oklch(62% 0.20 var(--accent-hue, 35))',
     accentBright: 'oklch(70% 0.20 var(--accent-hue, 35))',
     accentDeep: 'oklch(52% 0.19 var(--accent-hue, 35))',
+    // Low-opacity accent fill on light bg — chip/button hover backgrounds.
+    accentSubtle: 'oklch(62% 0.20 35 / 0.10)',
+    // Low-opacity accent border — chipActive border.
+    accentSubtleBorder: 'oklch(62% 0.20 35 / 0.30)',
+    // Accent glow ring — kinetic brandGlyph halo (muted on light bg).
+    accentHalo: 'oklch(62% 0.20 35 / 0.14)',
+    // Accent-hued bar fill — scopeviz bars on editorial.
+    scopeFill: 'oklch(62% 0.20 35 / 0.18)',
+    // Text on accent: near-white works on vermilion.
+    onAccent: 'oklch(97% 0.012 85)',
+    // Frosted nav backdrop: warm paper with high opacity.
+    navBg: 'oklch(97% 0.012 85 / 0.86)',
+    // Active dashboard nav-item highlight — accent at low alpha, tracks live --accent-hue.
+    navActiveBg: 'oklch(62% 0.20 var(--accent-hue, 35) / 0.14)',
+    // Hover border: use editorial's `line` value (warm grey).
+    borderHover: 'oklch(70% 0.016 72)',
+    // Featured card: warm paper surface (no gradient on editorial).
+    featuredBg: 'oklch(95% 0.014 84)',
+    // Semantic chip colours: live/shipped (editorial maps to accent, no live-green).
+    tagLiveBg: 'oklch(62% 0.20 35 / 0.10)',
+    tagLiveBorder: 'oklch(62% 0.20 35 / 0.30)',
     // No live-green concept in editorial — use accent
     live: 'oklch(62% 0.20 var(--accent-hue, 35))',
     // overlay: modal scrims / palette backdrop (editorial: warm paper-tone, light)
