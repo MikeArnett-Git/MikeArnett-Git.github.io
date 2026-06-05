@@ -46,3 +46,14 @@ const siteName = 'Mike Arnett';
   href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Fraunces:opsz,wght@9..144,300..600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap"
   rel="stylesheet"
 />
+
+<script>
+  // `.reveal` entrance animations are a first-load flourish. On client-side
+  // View-Transition navigation, flag the incoming document so they're suppressed
+  // (see `html.astro-navigated .reveal` in global.css.ts) — each page then appears
+  // instantly instead of re-staggering its content in (~0.6–1s) on every nav.
+  // Added once; the listener persists on `document` across navigations.
+  document.addEventListener('astro:before-swap', (e) => {
+    e.newDocument.documentElement.classList.add('astro-navigated');
+  });
+</script>

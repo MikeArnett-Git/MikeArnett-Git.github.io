@@ -47,8 +47,7 @@ globalStyle('body::before', {
   ].join(', '),
   backgroundSize: '56px 56px, 56px 56px, 56px 56px',
   backgroundPosition: '-1px -1px, -1px -1px, 27px 27px',
-  maskImage:
-    'radial-gradient(ellipse 120% 90% at 50% 0%, black 30%, transparent 90%)',
+  maskImage: 'radial-gradient(ellipse 120% 90% at 50% 0%, black 30%, transparent 90%)',
 });
 
 // Faint top-glow seam — powered panel motif
@@ -123,4 +122,16 @@ globalStyle(':focus-visible', {
 globalStyle('::selection', {
   background: `oklch(72% 0.16 var(--accent-hue, 205) / 0.3)`,
   color: contract.color.ink,
+});
+
+// ── View-Transition navigation: content appears instantly ──────────────────
+// `.reveal` entrance animations (opacity/translate, ~0.6s + staggered delays)
+// are a first-load flourish. On client-side View-Transition navigation, SiteHead
+// flags the incoming document with `astro-navigated`, so content renders at once
+// instead of re-staggering in (~0.6–1s) on every nav. Specificity (0,2,1) wins.
+globalStyle('html.astro-navigated .reveal', {
+  animation: 'none',
+  transition: 'none',
+  opacity: 1,
+  transform: 'none',
 });

@@ -1,0 +1,199 @@
+---
+/**
+ * AppShellScript — post-hydration interactive JS for the app shell.
+ * Extracted from AppShellLayout.astro to keep that file lean.
+ *
+ * Handles: hamburger/drawer, mobile scrim, ⌘K command palette (open/close,
+ * search filter, navigate, arrow-nav + focus trap), Escape to close.
+ *
+ * View-Transition aware: the shell is re-rendered on each client-side
+ * navigation, so element-scoped handlers are (re)attached on every page via
+ * astro:after-swap. Document-scoped key handlers are attached ONCE (document
+ * persists across navigations) and query the DOM on demand, so they always
+ * operate on the current, swapped-in shell rather than stale detached nodes.
+ *
+ * Bundled by Astro (NOT is:inline). Rendered at the end of <body>.
+ */
+---
+
+<script>
+  import { navigate } from 'astro:transitions/client';
+  import { STORAGE_PREFIX } from '../lib/theme';
+
+  (function () {
+    function byId(id: string): HTMLElement | null {
+      return document.getElementById(id);
+    }
+
+    // ── Drawer ──────────────────────────────────────────────────
+    function openDrawer(): void {
+      const sidebar = byId('shell-sidebar');
+      const scrim = byId('shell-scrim');
+      const hamburger = byId('shell-hamburger');
+      if (!sidebar || !scrim || !hamburger) return;
+      sidebar.classList.add('shell-sidebar--drawer-open');
+      scrim.classList.add('shell-scrim--open');
+      hamburger.setAttribute('aria-expanded', 'true');
+    }
+    function closeDrawer(): void {
+      const sidebar = byId('shell-sidebar');
+      const scrim = byId('shell-scrim');
+      const hamburger = byId('shell-hamburger');
+      if (!sidebar || !scrim || !hamburger) return;
+      sidebar.classList.remove('shell-sidebar--drawer-open');
+      scrim.classList.remove('shell-scrim--open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    }
+
+    // ── Command palette ─────────────────────────────────────────
+    function paletteIsOpen(): boolean {
+      const overlay = byId('shell-palette-overlay');
+      return !!overlay && overlay.classList.contains('shell-palette--open');
+    }
+    function filterItems(query: string): void {
+      const items = document.querySelectorAll<HTMLElement>('.shell-palette-filter-item');
+      const q = query.toLowerCase().trim();
+      items.forEach(function (item) {
+        const label = (item.dataset.label || '').toLowerCase();
+        item.style.display = !q || label.includes(q) ? '' : 'none';
+      });
+    }
+    function openPalette(): void {
+      const overlay = byId('shell-palette-overlay');
+      const input = byId('shell-palette-input') as HTMLInputElement | null;
+      const trigger = byId('shell-cmdk-trigger');
+      if (!overlay || !input) return;
+      overlay.removeAttribute('aria-hidden');
+      overlay.classList.add('shell-palette--open');
+      if (trigger) trigger.setAttribute('aria-expanded', 'true');
+      input.value = '';
+      filterItems('');
+      input.focus();
+    }
+    function closePalette(): void {
+      const overlay = byId('shell-palette-overlay');
+      const trigger = byId('shell-cmdk-trigger');
+      if (!overlay) return;
+      overlay.setAttribute('aria-hidden', 'true');
+      overlay.classList.remove('shell-palette--open');
+      if (trigger) {
+        trigger.setAttribute('aria-expanded', 'false');
+        (trigger as HTMLButtonElement).focus();
+      }
+    }
+
+    // ── Element-scoped handlers — RE-ATTACHED on every page ──────
+    // (the shell is re-rendered on each View-Transition navigation)
+    function initShell(): void {
+      const hamburger = byId('shell-hamburger');
+      if (hamburger) hamburger.addEventListener('click', openDrawer);
+
+      const scrim = byId('shell-scrim');
+      if (scrim) scrim.addEventListener('click', closeDrawer);
+
+      const sidebar = byId('shell-sidebar');
+      if (sidebar) {
+        sidebar.querySelectorAll('a').forEach(function (a) {
+          a.addEventListener('click', function () {
+            setTimeout(closeDrawer, 80);
+          });
+        });
+      }
+
+      const cmdkTrigger = byId('shell-cmdk-trigger');
+      if (cmdkTrigger) cmdkTrigger.addEventListener('click', openPalette);
+
+      const overlay = byId('shell-palette-overlay');
+      if (overlay) {
+        overlay.addEventListener('click', function (e: MouseEvent) {
+          if (e.target === overlay) closePalette();
+        });
+      }
+
+      const input = byId('shell-palette-input') as HTMLInputElement | null;
+      if (input) {
+        input.addEventListener('input', function () {
+          filterItems(input.value);
+        });
+      }
+
+      document.querySelectorAll<HTMLElement>('.shell-palette-filter-item').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          const href = btn.dataset.href;
+          if (!href) return;
+          closePalette();
+          if (href === '/') {
+            // "Switch to page view" persists a page layout so the homepage shows
+            // the page-scroll site instead of redirecting back to /app (D23); a
+            // full load lets the pre-paint ThemeScript apply that decision.
+            try {
+              localStorage.setItem(`${STORAGE_PREFIX}layout`, 'control-plane');
+            } catch {
+              /* storage unavailable — navigate anyway */
+            }
+            window.location.href = href;
+          } else {
+            // SPA View-Transition navigation — consistent with the sidebar links.
+            navigate(href);
+          }
+        });
+      });
+
+      const paletteEl = byId('shell-palette');
+      if (paletteEl) {
+        paletteEl.addEventListener('keydown', function (e: KeyboardEvent) {
+          const visibleItems = Array.from(
+            document.querySelectorAll<HTMLElement>(
+              '.shell-palette-filter-item:not([style*="display: none"])',
+            ),
+          );
+          const paletteInput = byId('shell-palette-input');
+          const focusable: HTMLElement[] = paletteInput
+            ? [paletteInput, ...visibleItems]
+            : visibleItems;
+          const cur = document.activeElement as HTMLElement;
+          const idx = visibleItems.indexOf(cur);
+          if (e.key === 'Tab') {
+            if (focusable.length === 0) return;
+            e.preventDefault();
+            const fIdx = focusable.indexOf(cur);
+            if (e.shiftKey) {
+              focusable[(fIdx - 1 + focusable.length) % focusable.length]?.focus();
+            } else {
+              focusable[(fIdx + 1) % focusable.length]?.focus();
+            }
+          } else if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            visibleItems[(idx + 1) % visibleItems.length]?.focus();
+          } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            visibleItems[(idx - 1 + visibleItems.length) % visibleItems.length]?.focus();
+          } else if (e.key === 'Enter' && idx >= 0) {
+            cur.click();
+          }
+        });
+      }
+    }
+
+    // ── Document-scoped keys — attached ONCE (document persists across VT) ──
+    function initGlobalKeys(): void {
+      document.addEventListener('keydown', function (e: KeyboardEvent) {
+        if (e.key === 'Escape') {
+          closeDrawer();
+          if (paletteIsOpen()) closePalette();
+        }
+      });
+      document.addEventListener('keydown', function (e: KeyboardEvent) {
+        if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+          e.preventDefault();
+          if (paletteIsOpen()) closePalette();
+          else openPalette();
+        }
+      });
+    }
+
+    initGlobalKeys();
+    initShell();
+    document.addEventListener('astro:after-swap', initShell);
+  })();
+</script>
