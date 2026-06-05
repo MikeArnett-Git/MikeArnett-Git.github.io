@@ -95,6 +95,19 @@ export interface ExperienceMetric {
   value: string;
 }
 
+/**
+ * Optional structured content for the /app Overview "Featured experience" widget.
+ * Keeps the widget's inline JSX copy in the data layer (D7 SoC).
+ * Fields contain HTML fragments; <strong>/<code> mark emphasis exactly as
+ * the original inline widget rendered them — content is relocated, not reworded.
+ */
+export interface FeaturedWidgetContent {
+  /** HTML fragment for the expProblem paragraph. */
+  problem: string;
+  /** HTML fragment for the expMethod paragraph. */
+  method: string;
+}
+
 export interface ExperienceRole {
   id: string;
   org: string;
@@ -117,6 +130,8 @@ export interface ExperienceRole {
   /** Achievement bullets — author-controlled HTML; <b> marks emphasis. */
   highlights?: string[];
   metrics: ExperienceMetric[];
+  /** Structured content for the /app Overview "Featured experience" widget. */
+  featuredWidget?: FeaturedWidgetContent;
 }
 
 export interface Education {
@@ -133,10 +148,23 @@ export interface CaseStudyLink {
   external?: boolean;
 }
 
+export interface CaseStudySnippet {
+  /** Short, curated code excerpt — rendered escaped (plain text, not HTML). */
+  code: string;
+  /** Path/caption shown above the excerpt, e.g. 'src/lib/theme.ts'. */
+  caption?: string;
+}
+
 export interface CaseStudySection {
   heading: string;
+  /** One-line scannable takeaway under the heading. Author-controlled HTML. */
+  lede?: string;
   /** Author-controlled HTML; <b> marks emphasis. */
   body: string;
+  /** Deep links to the relevant source behind this section (GitHub). */
+  sources?: CaseStudyLink[];
+  /** Optional curated code excerpt illustrating the decision. */
+  snippet?: CaseStudySnippet;
 }
 
 export interface CaseStudyBadge {
@@ -169,13 +197,7 @@ export interface NavLink {
   cta?: boolean;
 }
 
-export type AppView =
-  | 'overview'
-  | 'experience'
-  | 'projects'
-  | 'practices'
-  | 'about'
-  | 'resume';
+export type AppView = 'overview' | 'experience' | 'projects' | 'practices' | 'about' | 'resume';
 
 export interface AppNavItem {
   id: AppView;

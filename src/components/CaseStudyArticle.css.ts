@@ -3,7 +3,7 @@
  * Token-driven only (no hardcoded oklch). Reuses the contract colour + font
  * tokens. Renders correctly in all 4 themes (layout-agnostic component).
  */
-import { style, globalStyle } from '@vanilla-extract/css';
+import { globalStyle, style } from '@vanilla-extract/css';
 import { contract } from '../styles/contract.css';
 
 /** Centred content column — max ~70ch prose measure. */
@@ -187,4 +187,106 @@ export const linksRow = style({
   flexWrap: 'wrap',
   gap: '0.75rem',
   alignItems: 'center',
+});
+
+// ── Scannable section structure: number · heading → lede → details ──────────
+
+/** Section header row: index + heading on one baseline. */
+export const sectionHd = style({
+  display: 'flex',
+  alignItems: 'baseline',
+  gap: '0.7rem',
+});
+
+/** Section index (01, 02 …) — mono, accent, tabular. */
+export const sectionNum = style({
+  fontFamily: contract.font.mono,
+  fontSize: '0.78rem',
+  fontWeight: 700,
+  color: contract.color.accent,
+  letterSpacing: '0.02em',
+  fontVariantNumeric: 'tabular-nums',
+  flexShrink: 0,
+});
+
+/** The scannable one-line takeaway under the heading (the "subheading summary"). */
+export const sectionLede = style({
+  fontFamily: contract.font.display,
+  fontSize: 'clamp(1.05rem, 1.7vw, 1.24rem)',
+  fontWeight: 500,
+  lineHeight: 1.4,
+  letterSpacing: '-0.012em',
+  color: contract.color.ink,
+  margin: '0.1rem 0 0.1rem',
+  textWrap: 'balance',
+});
+
+globalStyle(`.${sectionLede} code`, {
+  fontFamily: contract.font.mono,
+  fontSize: '0.86em',
+  color: contract.color.accentBright,
+});
+globalStyle(`.${sectionLede} b`, {
+  color: contract.color.accentBright,
+  fontWeight: 600,
+});
+
+/** Curated code excerpt — accent-edged inset panel. */
+export const snippetBox = style({
+  margin: '0.1rem 0 0',
+  borderRadius: contract.radius.sm,
+  overflow: 'hidden',
+  background: contract.color.surfaceInset,
+  borderLeft: `2px solid ${contract.color.accent}`,
+});
+
+export const snippetCap = style({
+  fontFamily: contract.font.mono,
+  fontSize: '0.66rem',
+  letterSpacing: '0.05em',
+  textTransform: 'uppercase',
+  color: contract.color.inkFaint,
+  padding: '0.55rem 0.9rem 0',
+});
+
+export const snippetPre = style({
+  margin: 0,
+  padding: '0.5rem 0.9rem 0.8rem',
+  overflowX: 'auto',
+  fontFamily: contract.font.mono,
+  fontSize: '0.8rem',
+  lineHeight: 1.6,
+  color: contract.color.inkDim,
+  tabSize: 2,
+});
+
+/** Row of "view source on GitHub" deep links. */
+export const sourceRow = style({
+  display: 'flex',
+  flexWrap: 'wrap',
+  gap: '0.35rem 1rem',
+  marginTop: '0.15rem',
+});
+
+export const sourceLink = style({
+  fontFamily: contract.font.mono,
+  fontSize: '0.74rem',
+  color: contract.color.accentBright,
+  textDecoration: 'none',
+  letterSpacing: '0.01em',
+  '::after': {
+    content: '" ↗"',
+    color: contract.color.inkFaint,
+  },
+  selectors: {
+    '&:hover': {
+      color: contract.color.accent,
+      textDecoration: 'underline',
+    },
+    '&:focus-visible': {
+      outline: `2px solid ${contract.color.accentBright}`,
+      outlineOffset: '2px',
+      borderRadius: '2px',
+    },
+  },
 });

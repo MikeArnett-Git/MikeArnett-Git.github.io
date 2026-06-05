@@ -8,15 +8,36 @@
  * D20: renders only what the CaseStudy data provides — no IP leak.
  */
 import type { CaseStudy } from '../data/types';
-import Tag from './primitives/Tag.astro';
-import Button from './primitives/Button.astro';
 import {
-  article, backLink, kicker, title, lead,
-  sections, sectionBlock, sectionH2, sectionBody,
-  divider, badgesGrid, badgeTile, badgeKey, badgeVal,
-  stackSection, stackLabel, stackRow,
+  article,
+  backLink,
+  badgeKey,
+  badgesGrid,
+  badgeTile,
+  badgeVal,
+  divider,
+  kicker,
+  lead,
   linksRow,
+  sectionBlock,
+  sectionBody,
+  sectionH2,
+  sectionHd,
+  sectionLede,
+  sectionNum,
+  sections,
+  snippetBox,
+  snippetCap,
+  snippetPre,
+  sourceLink,
+  sourceRow,
+  stackLabel,
+  stackRow,
+  stackSection,
+  title,
 } from './CaseStudyArticle.css';
+import Button from './primitives/Button.astro';
+import Tag from './primitives/Tag.astro';
 
 interface Props {
   caseStudy: CaseStudy;
@@ -40,12 +61,31 @@ const { caseStudy: cs, backHref = '/#projects' } = Astro.props;
 
   <p class={`${lead} reveal`} set:html={cs.summary} />
 
-  <!-- Sections -->
+  <!-- Sections: heading → lede → details → (snippet) → source links -->
   <div class={sections}>
-    {cs.sections.map(s => (
+    {cs.sections.map((s, i) => (
       <div class={`${sectionBlock} reveal`}>
-        <h2 class={sectionH2}>{s.heading}</h2>
+        <div class={sectionHd}>
+          <span class={sectionNum}>{String(i + 1).padStart(2, '0')}</span>
+          <h2 class={sectionH2}>{s.heading}</h2>
+        </div>
+        {s.lede && <p class={sectionLede} set:html={s.lede} />}
         <div class={sectionBody} set:html={s.body} />
+        {s.snippet && (
+          <figure class={snippetBox}>
+            {s.snippet.caption && <figcaption class={snippetCap}>{s.snippet.caption}</figcaption>}
+            <pre class={snippetPre}><code>{s.snippet.code}</code></pre>
+          </figure>
+        )}
+        {s.sources && s.sources.length > 0 && (
+          <div class={sourceRow} aria-label="Source on GitHub">
+            {s.sources.map(lnk => (
+              <a class={sourceLink} href={lnk.href} target="_blank" rel="noopener noreferrer">
+                {lnk.label}
+              </a>
+            ))}
+          </div>
+        )}
       </div>
     ))}
   </div>
