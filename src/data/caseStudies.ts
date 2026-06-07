@@ -155,16 +155,9 @@ export const caseStudies: CaseStudy[] = [
     sections: [
       {
         heading: 'Stack',
-        lede: 'Astro static, one Preact island, typed zero-runtime CSS — a ~5&nbsp;KB JS budget.',
-        body: 'Astro ships static HTML with selective hydration, so first paint is fast and pages index reliably. The single interactive island — the live design switcher — runs on <b>Preact</b> via <code>preact/compat</code>, holding the homepage to roughly 5&nbsp;KB of gzipped JavaScript. Styling is <b>vanilla-extract</b>: type-checked, zero-runtime CSS compiled to static classes, with oklch design tokens. It’s TypeScript end to end, with Vitest, Biome and a GitHub&nbsp;Actions gate keeping it honest.',
-        sources: [
-          { label: 'astro.config.mjs', href: src('astro.config.mjs'), external: true },
-          {
-            label: 'preact-compat shim',
-            href: src('src/lib/preact-compat-client.ts'),
-            external: true,
-          },
-        ],
+        lede: 'Astro static, one React 19 island, typed zero-runtime CSS — a minimal JS budget.',
+        body: 'Astro ships static HTML with selective hydration, so first paint is fast and pages index reliably. The single interactive island — the live design switcher — runs on native <b>React 19</b> via <code>@astrojs/react</code>. Styling is <b>vanilla-extract</b>: type-checked, zero-runtime CSS compiled to static classes, with oklch design tokens. It’s TypeScript end to end, with Vitest, Biome and a GitHub&nbsp;Actions gate keeping it honest.',
+        sources: [{ label: 'astro.config.mjs', href: src('astro.config.mjs'), external: true }],
       },
       {
         heading: 'Two-axis design system',
@@ -249,7 +242,7 @@ export const contract = createThemeContract({
     ],
     tech: [
       'Astro 5 (static)',
-      'Preact (preact/compat)',
+      'React 19',
       'vanilla-extract (oklch tokens)',
       'TypeScript (strict)',
       'View Transitions',
